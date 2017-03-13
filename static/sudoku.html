@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>Sudoku</title>
+<link rel="stylesheet" href="sudoku.css" />	
+<script type="text/javascript" src="jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="sudoku.js"></script>
+<script type="text/javascript" src="sudoku_getdaily.js"></script>
+<script type="text/javascript" src="sudoku_getwebsudoku.js"></script>
+<script type="text/javascript" src="sudoku_print.js"></script>
+</head>
+<body>
+	<h3>Sudoku Helper</h3>
+	<div class="sudokuText" id="sudokutext"></div>
+	<table><tr><td valign="top" align="center">
+		<div id="grid"></div>
+		<div>Use the SHIFT key to enter/remove possible values</div>
+		<input id="savePuzzle" type="button" value="Save Puzzle">
+		<input id="printPuzzle" type="button" value="Print Puzzle">
+		<input id="resetPuzzle" type="button" value="Reset">
+		<hr>
+		<input class="getDailySudoku" id="Prev" type="button" value="<<">
+		<input class="getDailySudoku" id="Today" type="button" value="Get Daily Sudoku">
+		<input class="getDailySudoku" id="Next" type="button" value="&gt;&gt;" disabled>
+		<hr>
+		<select name="webSudokuLevel" id="webSudokuLevel">
+			<option value=1>Easy
+			<option value=2>Medium
+			<option value=3>Hard
+			<option value=4 selected>Evil
+		</select>
+		<input class="getWebSudoku" id="Today" type="button" value="Get WebSudoku">
+		
+	</td><td valign="top">
+		<div id="helper">
+		<hr>
+			<b>General:</b><br>
+			<input type="checkbox" id="autosweep">Auto Sweep<br>
+			<input type="button" id="removeAutoSweep" value="Remove Auto Sweep"><br>
+			<hr>
+			<b>Number Helper:</b><br>
+			Show according to :<br>
+			<input type="radio" name="helperNumberType" class="helperNumberType" value="found" checked> Found<br>
+			<input type="radio" name="helperNumberType" class="helperNumberType"  value="possibles"> Possible<br>
+			<input type="radio" name="helperNumberType" class="helperNumberType"  value="nothing"> Nothing<br>
+			Pick Number :<br>
+			<div id="helperNumbers"></div>
+			<hr>
+			<input type="button" id="addHelperBoard" value="Add Check Routes Grid" disabled><br>
+			<input type="button" id="removeHelperBoard" value="Remove Check Routes Grid" disabled>
+			<hr>
+			<b>Strategies:</b><br>
+			(Based on possible options)<br>
+			<input type="radio" name="strategies" value="none" id="none" checked>None<br>
+			<input type="radio" name="strategies" value="singleoptions" id="singleoptions">Single Number<br>
+			<input type="radio" name="strategies" value="onlynumberoption" id="onlynumberoption">Only Cell For Number<br>
+<!--
+			<input type="radio" name="strategies" id="doubles">Doubles<br>
+			<input type="radio" name="strategies" id="triples">Triples<br>
+			<input type="radio" name="strategies" id="quadruplets">Quaduplets<br>
+			<input type="radio" name="strategies" id="xwings">X Wings<br>
+-->
+		</div>
+	</td><td>
+			<div id="helpergrid"></div>
+	</td></tr></table>
+	<br>
+		<iframe src="blank.html" onLoad="loadedData()" id="sudokuData" name="sudokuData" width="1" height="1" frameborder="0"></iframe>
+</body>
+</html>

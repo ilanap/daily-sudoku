@@ -1,0 +1,89 @@
+body,td,tr,div {
+	background : white
+}
+.outerTable {
+	border: 3px solid black;
+	border-spacing:0;
+	border-collapse:collapse;
+}
+.outerCell {
+	border: 3px solid black;
+	border-spacing:0;
+	border-collapse:collapse;
+}
+.innerTable {
+	border: 2px solid black;
+	width:100%;
+	height:100%;
+}
+.sudokuText {
+	height:20px
+}
+.activeCell {
+	background : lightgray;
+}
+.gridCell {
+	background : white;
+}
+.errorCell {
+	border: 1px solid darkgrey;
+	width:55px;
+	height:55px;
+	text-align:center;
+	font-size:25px;
+	color : red;
+	background-color: pink;
+}
+.cellInput {
+	border: 1px solid darkgrey;
+	width:55px;
+	height:55px;
+	text-align:center;
+	font-size:25px;
+	color : blue;
+}
+.gridA {
+	border: 1px solid darkgrey;
+	width:30px;
+	height:55px;
+	text-align:center;
+	font-size:15px;
+	color : green;
+}
+.gridB {
+	border: 1px solid darkgrey;
+	width:30px;
+	height:55px;
+	text-align:center;
+	font-size:15px;
+	color : red;
+}
+
+.firstAlternativeCell {
+	background-color: lime;
+}
+
+.cellInputOptions {
+	font-size:11px;
+	color : black;
+}
+.puzzleCell {
+	border: 1px solid darkgrey;
+	width:55px;
+	height:55px;
+	text-align:center;
+	font-size:25px;
+	color : black;
+	background-color: white;
+}
+.foundNumber {
+	border: 1px solid green;
+	background-color : lime;
+	color : green;
+}
+.numberIneligble {
+	background-color : lightgray;
+}
+.currentHelperNumber {
+	background-color: lime;
+}
