@@ -1,8 +1,5 @@
 $(function(){		
-	if (document.location.href.indexOf("print.html") >0) {
-			parent.loadedDataFunction = null;
-	}
-	
+
 	$("#printPuzzle").click(function() {
 		if (document.domain == "localhost") {
 			document.all["sudokuData"].src = "print.html";
@@ -28,11 +25,6 @@ function printData() {
 	printTable.render();
 	printTable.resetPuzzle();
 	
-	/*
-	printTable = new Grid($("#printgrid2"));	
-	printTable.render();
-	printTable.resetPuzzle();
-	*/
 
 	var txt = useOpener.$("#sudokutext").html();
 	$("#sudokutext").html(txt);

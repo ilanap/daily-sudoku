@@ -7,9 +7,7 @@ var helperStrategies = new Array();
 var currentHelper = null;
 var loadedDataFunction = null;
 var sudokuDataUrlPrefx = "/sudoku?";
-if (document.domain == "localhost") {
-	sudokuDataUrlPrefx = "sudoku.jsp?";
-}
+var dailySudokuPrevDays = 0;
 
 /******* O B J E C T S *************************/
 
@@ -588,17 +586,65 @@ $(function() {
 			$(this).addClass("firstAlternativeCell");
 		}
 	});
+
+	/*********** D A I L Y    S U D O K U   S U P P O R T  *******************/
+	$(".getDailysudoku").on("click", function() {
+		$("#sudokutext").text("");
+		var type = $(this).attr("id");
+		var date = new Date();
+		loadedDataFunction = loadDailySudoku;
+		if (type == "Today") {
+			dailySudokuPrevDays=0;
+		} else if (type=="Prev") {
+			dailySudokuPrevDays++;
+		} else if (type=="Next"){
+			dailySudokuPrevDays--;
+		}
+		if (dailySudokuPrevDays) {
+			date.setDate(date.getDate()  - dailySudokuPrevDays);
+		}
+		getDailySudoku(date);
+		var isdisabled = (dailySudokuPrevDays) ? null : "disabled";
+		$("#Next.getDailysudoku").attr("disabled", isdisabled);
+		
+	});
+
+
 	initData();
 
 });
 
 /******** F U N C T I O N S ******************/
-function loadedData() {
-	if (loadedDataFunction != null) {
-		loadedDataFunction(puzzleGrid);
-	}
+
+function getDailySudoku(date) {
+	let urlPrefix = (document.domain === 'localhost') ? "test_html.html" : "/sudoku"
+	$.ajax({
+		url: urlPrefix  + "?type=daily&year=" + date.getFullYear() + "&month=" + (date.getMonth()+1) + "&day="+date.getDate()
+	  }).done(function(response) {
+		loadDailySudoku( jQuery.parseJSON(response));
+	  });
+
 }
 
+function loadDailySudoku(data) {
+	this.valuesGrid.clearPuzzle();
+	var dimSquare = dimension*dimension;
+	for (var i=0;i<data.numbers.length;i++) {
+		var row = Math.floor(i/dimSquare);
+		var col = i%dimSquare;
+		if (data.numbers[i] != ".") {
+			this.valuesGrid.getCell(row,col).setValue(data.numbers[i]);
+		}
+	}	
+	this.valuesGrid.saveAsPuzzle();		
+	var difficulties = new Array();
+	difficulties[4] = "very hard";
+	difficulties[3] = "hard";
+	difficulties[2] = "medium";
+	difficulties[1] = "easy";
+	$("#sudokutext").html("<a target='_new' href='http://www.dailysudoku.com'>"+data.title+"</a> , difficulty: "+ difficulties[data.difficulty]);
+
+}
 
 function addHelperGrid() {
 	// building the outergrid
@@ -626,7 +672,7 @@ function addHelperGrid() {
 }
 
 function initData() {
-		
+		getDailySudoku(new Date());
 		/**
 	valuesGrid.getCell(0, 0).setValue(1);
 	valuesGrid.getCell(1, 1).setValue(2);

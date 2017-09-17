@@ -1,11 +1,9 @@
 <html>
 <head>
-<title>Sudoku</title>
+<title>My Sudoku</title>
 <link rel="stylesheet" href="sudoku.css" />	
 <script type="text/javascript" src="jquery-1.8.2.min.js"></script>
 <script type="text/javascript" src="sudoku.js"></script>
-<script type="text/javascript" src="sudoku_getdaily.js"></script>
-<script type="text/javascript" src="sudoku_getwebsudoku.js"></script>
 <script type="text/javascript" src="sudoku_print.js"></script>
 </head>
 <body>
@@ -21,6 +19,7 @@
 		<input class="getDailySudoku" id="Prev" type="button" value="<<">
 		<input class="getDailySudoku" id="Today" type="button" value="Get Daily Sudoku">
 		<input class="getDailySudoku" id="Next" type="button" value="&gt;&gt;" disabled>
+<!--
 		<hr>
 		<select name="webSudokuLevel" id="webSudokuLevel">
 			<option value=1>Easy
@@ -29,7 +28,7 @@
 			<option value=4 selected>Evil
 		</select>
 		<input class="getWebSudoku" id="Today" type="button" value="Get WebSudoku">
-		
+-->		
 	</td><td valign="top">
 		<div id="helper">
 		<hr>
@@ -63,7 +62,5 @@
 	</td><td>
 			<div id="helpergrid"></div>
 	</td></tr></table>
-	<br>
-		<iframe src="blank.html" onLoad="loadedData()" id="sudokuData" name="sudokuData" width="1" height="1" frameborder="0"></iframe>
 </body>
 </html>
