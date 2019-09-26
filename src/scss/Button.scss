@@ -1,0 +1,16 @@
+.button {
+  background-color: $blue;
+  border: none;
+  color: $textColor;
+  padding: 10px 25px;
+  width: ($cellInnerSize*3);
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: $fontBaseSize;
+  font-weight: bold;
+  border-radius: $borderRadius;
+  margin-top : $gridGap*2;
+  margin-left: $gridGap;
+  margin-right: $gridGap*2;
+}

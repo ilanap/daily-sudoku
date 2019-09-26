@@ -1,47 +1,56 @@
 .grid {
-  background-color: deeppink;
-  width: 600px;
-  height: 600px;
+  width: 9* ($cellInnerSize + $gridGap);
+  height: 9* ($cellInnerSize + $gridGap);
 
   .wrapper {
     display: grid;
-    grid-gap: 2px;
-    grid-template-columns: repeat(9, [col] auto ) ;
-    grid-template-rows: repeat(9, [row] auto  );
-    background-color: #fff;
-    color: #444;
+    grid-gap: $gridGap;
+    grid-template-columns: repeat(9, [col] $cellInnerSize ) ;
+    grid-template-rows: repeat(9, [row] $cellInnerSize  );
+    background-color: $backgroundColorGrid;
+    color: $textColor;
     .even {
-      background-color: #4d4d4d;
+      background-color: $baseColor;
     }
     .uneven {
-      background-color: #262626;
+      background-color: lighten( $baseColor, 10% );
     }
   }
 
   .cell {
-    background-color: #444;
-    color: #fff;
-    border-radius: 5px;
-    font-size: 25pt;
+    color: $textColor;
+    border-radius: $borderRadius;
+    font-size:$fontBaseSize * 1.5;
+
+    &.cellValueClass {
+      padding-top: $cellInnerSize*.23;
+      padding-left: $cellInnerSize*.33;
+    }
+    &.optionalValues {
+      padding-top: $borderRadius;
+      padding-left: $borderRadius;
+    }
+    &.active {
+      border: 2px solid $backgroundColorGrid;
+    }
+
+
     &.error {
       background-color: crimson;
     }
-    .valueEditor {
-      width: 50px;
-      height: 50px;
-      color: #fff;
-      background-color: transparent;
-      border: 0px;
-      margin: 0px;
-      font-size: 25pt;
-      padding-top: 15px;
-      padding-left: 15px;
-      &:focus {
-        outline: none;
-      }
+
+    .cellOptionalValues-wrapper {
+      display: grid;
+      grid-gap: $gridGap * .5;
+      margin-left: 0;
+      grid-template-columns: repeat(3, [col] ($cellInnerSize - ($borderRadius*4))/3 ) ;
+      grid-template-rows: repeat(3, [row] ($cellInnerSize - ($borderRadius*4))/3  );
+      font-size: $fontBaseSize * .45;
     }
-    .cellValue{
-      padding: 20px;
+    .cellOptionalValues-cell {
+      text-align: center;
+      padding: $borderRadius;
+      color:darken($textColor, 20%)
     }
   }
 }

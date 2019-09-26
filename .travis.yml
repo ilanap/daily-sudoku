@@ -17,3 +17,8 @@ deploy:
   default: true
   on:
     all_branches: true
+# safelist
+branches:
+  only:
+    - master
+    - stable

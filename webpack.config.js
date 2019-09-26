@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const mockData = require('./tools/mocks/mockData.json');
 
 module.exports = () => {
-    //let lintOptions = { fix: false, failOnError: false };
+    let lintOptions = { fix: false, failOnError: false };
     let srcPath = [path.resolve(__dirname, 'src')];
     let modulePath = [path.resolve('.'), path.join(__dirname, 'node_modules')];
     let webpackConfig = {
@@ -31,8 +31,8 @@ module.exports = () => {
                     test: /\.(js|jsx)$/,
                     include: [srcPath],
                     use: [
-                        { loader: 'babel-loader' }/*,
-                        { loader: 'eslint-loader', options: lintOptions }*/
+                        { loader: 'babel-loader' },
+                        { loader: 'eslint-loader', options: lintOptions }
                     ]
                 },
                 {

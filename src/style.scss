@@ -1,12 +1,27 @@
+$baseColor: #4d4d4d;
+$textColor: #ffffff;
+$backgroundColorGrid: #ffffff;
+$borderRadius: 5px;
+$fontBaseSize: 15pt;
+$blue:#009fdb;
+$cellInnerSize: 60px;
+$gridGap: 2px;
+
 @import 'scss/Loader';
 @import 'scss/Grid';
 @import 'scss/Button';
+
+[tabindex] {
+  outline: none !important;
+}
+
 
 body {
   font-family: Arial;
   margin-left: 50px;
   margin-top: 50px;
+  font-size: $fontBaseSize;
 }
 h1 {
-  color: #009fdb;
+  color: $blue;
 }
