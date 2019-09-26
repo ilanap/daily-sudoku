@@ -1,0 +1,24 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": {
+                    "browsers": ["last 2 versions", "Firefox >= 47"]
+                }
+            }
+        ],
+        "@babel/react"
+    ],
+    "plugins": [
+        "react-hot-loader/babel",
+        "@babel/plugin-proposal-object-rest-spread",
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-runtime",
+        [
+            "@babel/plugin-proposal-decorators",
+            { "decoratorsBeforeExport": false}
+        ]
+    ],
+    "sourceMap": "inline"
+}
