@@ -5,13 +5,13 @@ import { connect } from 'react-redux';
 import { actionTypes } from './GridConstants.js';
 
 const getCells = state => state && state.grid && state.grid.cells;
-const getWithOptionalValues = state =>
-    state && state.grid && state.grid.withOptionalValues;
-
+const isSweep = state => state && state.grid && state.grid.isSweep;
+const isSolved = state => state && state.grid && state.grid.solved;
 const mapStateToProps = state => {
     return {
         cells: getCells(state),
-        isOptionalValues: getWithOptionalValues(state)
+        isSweep: isSweep(state),
+        solved: isSolved(state)
     };
 };
 
@@ -20,7 +20,7 @@ function mapDispatchToProps(dispatch) {
         onChange: (e, cell) =>
             dispatch({
                 type: actionTypes.CELL_CHANGED,
-                payload: { newValue: e, cell: cell }
+                payload: { keyCode: e.which, isShift: e.shiftKey, cell: cell }
             }),
         onClick: cell =>
             dispatch({
@@ -50,7 +50,8 @@ class Grid extends React.Component {
         onReset: PropTypes.func,
         onSweep: PropTypes.func,
         onClick: PropTypes.func,
-        isOptionalValues: PropTypes.bool
+        solved: PropTypes.bool,
+        isSweep: PropTypes.bool
     };
 
     render() {
@@ -59,9 +60,10 @@ class Grid extends React.Component {
             onChange,
             onUndo,
             onReset,
-            isOptionalValues,
+            isSweep,
             onSweep,
-            onClick
+            onClick,
+            solved
         } = this.props;
         return (
             <GridView
@@ -70,7 +72,8 @@ class Grid extends React.Component {
                 onUndo={onUndo}
                 onReset={onReset}
                 onSweep={onSweep}
-                isOptionalValues={isOptionalValues}
+                isSweep={isSweep}
+                solved={solved}
                 cells={cells}
             />
         );

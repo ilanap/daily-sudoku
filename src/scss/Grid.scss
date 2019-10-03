@@ -49,8 +49,9 @@
     }
     .cellOptionalValues-cell {
       text-align: center;
-      padding: $borderRadius;
-      color:darken($textColor, 20%)
+      padding: $borderRadius/2;
+      font-size:$fontBaseSize * .6;
+      color:darken($textColor, 10%)
     }
   }
 }

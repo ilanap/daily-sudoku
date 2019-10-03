@@ -6,7 +6,6 @@
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:jest/recommended",
         "prettier"
     ],
 
@@ -16,7 +15,6 @@
         "browser": true,
         "commonjs": true,
         "es6": true,
-        "jest": true,
         "node": true
     },
 
@@ -42,9 +40,5 @@
                 "tabWidth": 4
             }
         ]
-    },
-
-    "globals": {
-        "DEV": false
     }
 }

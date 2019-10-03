@@ -3,15 +3,20 @@ import {
     GRID_SIZE,
     actionTypes as gridActionTypes
 } from 'components/Grid/GridConstants';
-
-const subGridSize = Math.sqrt(GRID_SIZE);
-const checkFields = ['column', 'row', 'subGrid'];
+import {
+    handleOptionalValues,
+    updateOptionalValues,
+    parseOrigDataToCells,
+    getKeyValueFromEvent,
+    checkValue
+} from './GridHelper.js';
 
 export default (
     state = {
         origData: null,
-        withOptionalValues: false,
+        isSweep: false,
         history: new Array(),
+        solved: false,
         cells: new Array(GRID_SIZE * GRID_SIZE)
     },
     action
@@ -19,11 +24,38 @@ export default (
     switch (action.type) {
         case actionTypes.SUDOKU_DATA_LOADED: {
             let data = [...action.payload.numbers];
-            let cells = parseOrigDataToCells(data);
             return {
                 ...state,
                 origData: data,
-                cells: cells
+                solved: false,
+                cells: parseOrigDataToCells(data)
+            };
+        }
+        case gridActionTypes.RESET: {
+            return {
+                ...state,
+                cells: parseOrigDataToCells(state.origData),
+                isSweep: false,
+                solved: false,
+                history: new Array()
+            };
+        }
+        case gridActionTypes.SWEEP: {
+            let cells = [...state.cells];
+            let sweep = state.isSweep === false;
+            if (sweep) {
+                cells = handleOptionalValues(cells);
+            } else {
+                cells = cells.map(item => {
+                    item.sweepValues = [];
+                    return item;
+                });
+            }
+            return {
+                ...state,
+                cells: cells,
+                solved: false,
+                isSweep: sweep
             };
         }
         case gridActionTypes.UNDO: {
@@ -38,23 +70,21 @@ export default (
                 return {
                     ...item,
                     value: lastChange[0].value,
-                    error: lastChange.error
+                    error: lastChange[0].error
                 };
             });
-            cells = updateOptionalValues(cells);
+            if (state.isSweep) {
+                cells = handleOptionalValues(cells);
+            }
             return {
                 ...state,
                 history: state.history.slice(1),
+                solved: false,
                 cells: cells
             };
         }
-        case gridActionTypes.SWEEP: {
-            return {
-                ...state,
-                withOptionalValues: true
-            };
-        }
         case gridActionTypes.CELL_CLICKED: {
+            //resetting previously clicked cell and setting current
             let cells = state.cells.map((item, index) => {
                 if (index !== action.payload.cell.index) {
                     if (item.active) {
@@ -73,143 +103,74 @@ export default (
             });
             return {
                 ...state,
+                solved: false,
                 cells: cells
             };
         }
-        case gridActionTypes.RESET: {
-            return {
-                ...state,
-                cells: parseOrigDataToCells(state.origData),
-                history: new Array()
-            };
-        }
         case gridActionTypes.CELL_CHANGED: {
-            // TODO handle the keycode we got...
-            let evt = action.payload.newValue;
-            let val = null;
-            let removePossible = null;
-            // handling numbers
-            if (evt.which >= 49 && evt.which <= 58) {
-                val = evt.which - 48;
-                if (evt.shiftKey) {
-                    removePossible = val;
-                    val = null;
-                }
-            } else if (evt.which == 8 || evt.which == 46) {
-                // handling delete or backspace
-                val = null;
-            } else {
-                val = null;
-                evt.preventDefault();
+            let keyData = getKeyValueFromEvent(action.payload);
+            if (keyData === null) {
+                // uninteresting key
+                return state;
             }
-
             let cells = [...state.cells];
             let cell = cells[action.payload.cell.index];
-            let { index, value, error, allowedValues } = cell;
-            if (removePossible) {
+            let { index, value, error, sweepValues } = cell;
+            if (keyData.isSweep) {
                 cells = cells.map((item, index) => {
                     if (index !== action.payload.cell.index) {
                         return item;
                     }
                     return {
                         ...item,
-                        allowedValues: item.allowedValues.filter(
-                            c => c !== removePossible
+                        sweepValues: item.sweepValues.filter(
+                            c => c !== keyData.val
                         )
                     };
                 });
             } else {
-                if (val === cell.value) {
+                if (keyData.val === cell.value) {
                     return state;
                 }
+                /*
                 if (cell.value !== null) {
-                    // resetting old value first
+                    // resetting all the optional values in case we changed the value of a cell
                     cell.value = null;
-                    cells = updateOptionalValues(cells);
+                    cells = handleOptionalValues(cells);
                 }
+                */
                 cells = cells.map((item, index) => {
                     if (index !== action.payload.cell.index) {
                         return item;
                     }
+                    cell.value = keyData.val;
+                    error = checkValue(cells, cell);
                     return {
                         ...item,
-                        value: val,
-                        error: val !== null && !cell.allowedValues.includes(val)
+                        value: keyData.val,
+                        error: error
                     };
                 });
-                cells = updateOptionalValues(cells);
+                if (state.isSweep) {
+                    updateOptionalValues(cells, cells[cell.index]);
+                }
             }
+            if (value === null) error = false;
+            let solved = cells.find(cell => cell.error || cell.value === null);
+            console.log(solved);
             return {
                 ...state,
                 cells: cells,
-                history: [{ value, index, error, allowedValues }, ...state.history]
+                solved:
+                    cells.find(cell => cell.error || cell.value === null) ===
+                    undefined,
+                history: [
+                    { value, index, error, sweepValues },
+                    ...state.history
+                ]
             };
         }
         default:
             return state;
     }
 };
-
-function parseOrigDataToCells(strArr) {
-    let outputData = new Array(GRID_SIZE * GRID_SIZE);
-    for (let i = 0; i < strArr.length; i++) {
-        let cellData = { index: i, error: false, active: false };
-        if (strArr[i] !== '.') {
-            cellData.value = +strArr[i];
-            cellData.given = true;
-        } else {
-            cellData.value = null;
-        }
-        cellData.row = Math.floor(i / GRID_SIZE);
-        cellData.column = i % GRID_SIZE;
-
-        let subGridForRow = Math.floor(cellData.row / subGridSize);
-        let subGridForCol = Math.floor(cellData.column / subGridSize);
-        cellData.subGrid = subGridForRow * subGridSize + subGridForCol;
-        outputData[i] = cellData;
-    }
-    return updateOptionalValues(outputData);
-}
-
-function updateOptionalValues(cells) {
-    let sweepData = {};
-    checkFields.forEach(field => {
-        sweepData[field] = new Array(GRID_SIZE);
-    });
-    for (let i = 0; i < GRID_SIZE; i++) {
-        checkFields.forEach(field => {
-            sweepData[field][i] = cells
-                .filter(cell => cell.value !== null && cell[field] === i)
-                .map(cell => cell.value);
-        });
-    }
-    cells.forEach(cell => {
-        if (!cell.given) {
-            // init to to all possible values. will then remove the ones that are already presend
-            cell.allowedValues = Array.from(Array(GRID_SIZE), (e, i) => i + 1);
-            checkFields.forEach(field => {
-                let values = sweepData[field][cell[field]];
-                cell.allowedValues = cell.allowedValues.filter(
-                    val => !values.includes(val)
-                );
-            });
-        }
-    });
-    return cells;
-}
-
-/*
-function checkValue(grid, cell, newVal) {
-
-    let error = grid.find(
-        c =>
-            c.index !== cell.index &&
-            (c.row === cell.row ||
-                c.column === cell.column ||
-                c.subGrid === cell.subGrid) &&
-            c.value === newVal
-    );
-    return error != null;
-
-}
-*/

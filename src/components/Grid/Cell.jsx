@@ -1,12 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
 
-
-const Cell = ({ cell, onChange, isOptionalValues, onClick }) => {
+const Cell = ({ cell, onChange, isSweep, onClick }) => {
     let gridClass = cell.subGrid % 2 ? 'even' : 'uneven';
     let errorClass = cell.error ? 'error' : null;
     let optionValuesClass =
-        cell.value === null && isOptionalValues ? 'optionalValues' : null;
+        cell.value === null && isSweep ? 'optionalValues' : null;
     let cellvalueClass = cell.value != null ? 'cellValueClass' : null;
     let activeClass = cell.active ? 'active' : null;
     return (
@@ -14,7 +13,7 @@ const Cell = ({ cell, onChange, isOptionalValues, onClick }) => {
             tabIndex={cell.index}
             key={cell.index}
             onClick={cell.given ? null : () => onClick(cell)}
-            onKeyDown={cell.given ? null : (e) => onChange(e, cell)}
+            onKeyDown={cell.given ? null : e => onChange(e, cell)}
             className={classnames(
                 activeClass,
                 errorClass,
@@ -24,9 +23,9 @@ const Cell = ({ cell, onChange, isOptionalValues, onClick }) => {
                 optionValuesClass
             )}>
             {cell.value !== null && <div>{cell.value}</div>}
-            {!cell.value && isOptionalValues && (
+            {!cell.value && isSweep && (
                 <div className="cellOptionalValues-wrapper">
-                    {cell.allowedValues.map((val, i) => (
+                    {cell.sweepValues.map((val, i) => (
                         <div key={i} className="cellOptionalValues-cell">
                             {val}
                         </div>

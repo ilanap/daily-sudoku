@@ -9,7 +9,9 @@ const MainPage = ({ data }) => (
         {data.title === undefined && <Loader />}
         {data.title !== undefined && (
             <div>
-                <h3>{data.title} - {difficulties[data.difficulty]}</h3>
+                <h3>
+                    {data.title} - {difficulties[data.difficulty]}
+                </h3>
                 <Grid />
             </div>
         )}

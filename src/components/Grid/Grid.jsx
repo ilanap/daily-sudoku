@@ -7,12 +7,19 @@ const Grid = ({
     onChange,
     onUndo,
     onReset,
-    isOptionalValues,
+    isSweep,
     onSweep,
-    onClick
+    onClick,
+    solved
 }) => {
     return (
         <div className="grid">
+            {solved && (
+                <div className="pyro">
+                    <div className="before" />
+                    <div className="after" />
+                </div>
+            )}
             <div className="wrapper">
                 {cells.map((cell, i) => {
                     return (
@@ -20,7 +27,7 @@ const Grid = ({
                             key={i}
                             cell={cell}
                             onClick={onClick}
-                            isOptionalValues={isOptionalValues}
+                            isSweep={isSweep}
                             onChange={onChange}
                         />
                     );
@@ -28,7 +35,7 @@ const Grid = ({
             </div>
             <Button name="Undo" onClick={onUndo} />
             <Button name="Reset" onClick={onReset} />
-            <Button name="Sweep" onClick={onSweep} />
+            <Button name={isSweep ? 'UnSweep' : 'Sweep'} onClick={onSweep} />
         </div>
     );
 };
