@@ -7,11 +7,18 @@ import { actionTypes } from './GridConstants.js';
 const getCells = state => state && state.grid && state.grid.cells;
 const isSweep = state => state && state.grid && state.grid.isSweep;
 const isSolved = state => state && state.grid && state.grid.solved;
+const getFindCellValue = state =>
+    state && state.grid && state.grid.showFoundValue;
+const getSweepCellValue = state =>
+    state && state.grid && state.grid.showSweepValue;
+
 const mapStateToProps = state => {
     return {
         cells: getCells(state),
         isSweep: isSweep(state),
-        solved: isSolved(state)
+        solved: isSolved(state),
+        findCellValue: getFindCellValue(state),
+        findSweepValue: getSweepCellValue(state)
     };
 };
 
@@ -38,7 +45,26 @@ function mapDispatchToProps(dispatch) {
         onSweep: () =>
             dispatch({
                 type: actionTypes.SWEEP
-            })
+            }),
+        fireworks: () =>
+            dispatch({
+                type: actionTypes.FIREWORKS
+            }),
+        onShowFoundCells: value =>
+            dispatch({
+                type: actionTypes.SHOW_FOUND,
+                payload: value
+            }),
+        onShowSweepCells: value =>
+            dispatch({
+                type: actionTypes.SHOW_SWEEP,
+                payload: value
+            }),
+        clickStrategy: evt => {
+            dispatch({
+                type: evt.target.value
+            });
+        }
     };
 }
 
@@ -49,9 +75,15 @@ class Grid extends React.Component {
         onUndo: PropTypes.func,
         onReset: PropTypes.func,
         onSweep: PropTypes.func,
+        fireworks: PropTypes.func,
         onClick: PropTypes.func,
+        onShowFoundCells: PropTypes.func,
+        onShowSweepCells: PropTypes.func,
+        clickStrategy: PropTypes.func,
         solved: PropTypes.bool,
-        isSweep: PropTypes.bool
+        isSweep: PropTypes.bool,
+        findCellValue: PropTypes.number,
+        findSweepValue: PropTypes.number
     };
 
     render() {
@@ -63,7 +95,13 @@ class Grid extends React.Component {
             isSweep,
             onSweep,
             onClick,
-            solved
+            fireworks,
+            onShowFoundCells,
+            onShowSweepCells,
+            findCellValue,
+            findSweepValue,
+            solved,
+            clickStrategy
         } = this.props;
         return (
             <GridView
@@ -74,7 +112,13 @@ class Grid extends React.Component {
                 onSweep={onSweep}
                 isSweep={isSweep}
                 solved={solved}
+                fireworks={fireworks}
                 cells={cells}
+                onShowFoundCells={onShowFoundCells}
+                onShowSweepCells={onShowSweepCells}
+                findCellValue={findCellValue}
+                findSweepValue={findSweepValue}
+                clickStrategy={clickStrategy}
             />
         );
     }

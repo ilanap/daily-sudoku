@@ -1,7 +1,23 @@
 .grid {
-  width: 9* ($cellInnerSize + $gridGap);
-  height: 9* ($cellInnerSize + $gridGap);
+  width: 9* ($cellInnerSize + $gridGap) ;
 
+  .helpers {
+    background-color: lighten($baseColor, 50%);
+    border-radius: $borderRadius;
+    padding: $gridGap*2;
+  }
+
+  .label {
+    width: 175px;
+    height: 30px;
+    display:inline-block;
+
+  }
+  select {
+    &.strategy {
+      background-color: lighten($strategyColor, 40%);
+    }
+  }
   .wrapper {
     display: grid;
     grid-gap: $gridGap;
@@ -33,7 +49,17 @@
     &.active {
       border: 2px solid $backgroundColorGrid;
     }
+    &.strategy {
+      background-color: $strategyColor;
+    }
 
+    &.foundValue {
+      background-color: lighten($blue, 20%);
+    }
+    &.sweepValue {
+      background-color:  lighten($alternativeColor, 20%);
+      text: black;
+    }
 
     &.error {
       background-color: crimson;

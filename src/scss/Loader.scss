@@ -1,6 +1,6 @@
 .loader {
-  border: 10px solid #009fdb;
-  border-top: 10px solid #9dd9ef;
+  border: 10px solid lighten($blue, 30%);
+  border-top: 10px solid $blue;
   border-radius: 50%;
   width: 100px;
   height: 100px;

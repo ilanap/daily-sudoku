@@ -6,6 +6,9 @@ $fontBaseSize: 15pt;
 $blue:#009fdb;
 $cellInnerSize: 60px;
 $gridGap: 2px;
+$sweepButtonColor: #f4a4f5;
+$alternativeColor: #ff1493;
+$strategyColor: #25ba8b;
 
 @import 'scss/Loader';
 @import 'scss/Grid';
@@ -21,8 +24,10 @@ body {
   font-family: Arial;
   margin-left: 50px;
   margin-top: 50px;
-  font-size: $fontBaseSize;
+  overflow: auto;
 }
-h1 {
+h3 {
   color: $blue;
+  font-size: $fontBaseSize * 1.5;
+  margin-bottom: 3px;
 }

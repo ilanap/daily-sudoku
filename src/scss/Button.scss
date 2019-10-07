@@ -14,3 +14,32 @@
   margin-left: $gridGap;
   margin-right: $gridGap*2;
 }
+.fireworks {
+  background-color: $alternativeColor;
+  width: ($cellInnerSize*7);
+  margin-right:$cellInnerSize;
+  margin-left:$cellInnerSize;
+}
+.number {
+  margin: $gridGap ;
+  width: 30px;
+  padding: $gridGap *2;
+  font-size: $fontBaseSize * .75;
+  &.foundNumber {
+    background-color: lighten($blue, 30%);
+    &.active {
+      background-color: $blue;
+    }
+  }
+  &.sweepNumber {
+    background-color: lighten($alternativeColor, 30%);
+    &.active {
+      background-color: $alternativeColor;
+    }
+  }
+  &.off {
+    background-color: lighten($baseColor, 40%);
+    text-align: center;
+    width: 60px;
+  }
+}

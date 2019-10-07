@@ -4,7 +4,7 @@ import {
     SUB_GRID_SIZE
 } from 'components/Grid/GridConstants';
 
-export function handleOptionalValues(cells) {
+export function getFieldsSweepData(cells) {
     let sweepData = {};
     CHECK_FIELDS.forEach(field => {
         sweepData[field] = new Array(GRID_SIZE);
@@ -16,6 +16,10 @@ export function handleOptionalValues(cells) {
                 .map(cell => cell.value);
         });
     }
+    return sweepData;
+}
+export function handleOptionalValues(cells) {
+    let sweepData = getFieldsSweepData(cells);
     cells.forEach(cell => {
         if (!cell.given) {
             // init to to all possible values. will then remove the ones that are already presend
@@ -91,8 +95,8 @@ export function getKeyValueFromEvent({ keyCode, isShift }) {
     return keyInfo;
 }
 
-export function checkValue(grid, cell) {
-    console.log(cell);
+export function checkError(grid, cell) {
+    if (cell.value === null) return false;
     let error = grid.find(
         c =>
             c.index !== cell.index &&
@@ -101,6 +105,6 @@ export function checkValue(grid, cell) {
                 c.subGrid === cell.subGrid) &&
             c.value === cell.value
     );
-    console.log(error);
+
     return error != null;
 }

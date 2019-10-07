@@ -1,12 +1,13 @@
 import React from 'react';
+import classnames from 'classnames';
 
-const Button = ({ name, onClick }) => {
+const Button = ({ name, onClick, classNames, value }) => {
     return (
         <input
-            className="button"
+            className={classnames('button', classNames)}
             type="button"
             value={name}
-            onClick={() => onClick()}
+            onClick={() => onClick(value)}
         />
     );
 };

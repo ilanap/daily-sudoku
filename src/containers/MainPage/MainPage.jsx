@@ -5,13 +5,17 @@ import { difficulties } from './MainPageConstants.js';
 
 const MainPage = ({ data }) => (
     <div className="main">
-        <h1>Daily Sudoku Helper</h1>
+        <h3>Daily Sudoku Helper</h3>
         {data.title === undefined && <Loader />}
         {data.title !== undefined && (
             <div>
-                <h3>
+                <b>
+                    {' '}
                     {data.title} - {difficulties[data.difficulty]}
-                </h3>
+                </b>
+                , Copyright:{' '}
+                <a href="http://www.dailysudoku.com/">Daily Sudoku</a>
+                <br />
                 <Grid />
             </div>
         )}

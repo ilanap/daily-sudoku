@@ -1,4 +1,4 @@
-import { takeEvery, put } from 'redux-saga/effects';
+import { takeEvery, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 
 import {
@@ -7,13 +7,22 @@ import {
 } from 'containers/MainPage/MainPageConstants.js';
 import { actionTypes as loaderActionTypes } from 'components/Loader/LoaderConstants.js';
 
+export const getQueryParams = state => state.queryParams;
+
 function* loadExternalSudokuData() {
     yield put({
         type: loaderActionTypes.SHOW
     });
     let now = new Date();
+    let url = '/sudoku';
+    let queryParams = yield select(getQueryParams);
+    if (queryParams !== null) {
+        url += queryParams + '&';
+    } else {
+        url += '?';
+    }
     let responseData = yield axios.get(
-        `/sudoku?type=daily&year=${now.getFullYear()}&month=${now.getMonth() +
+        `${url}type=daily&year=${now.getFullYear()}&month=${now.getMonth() +
             1}&day=${now.getDate()}`
     );
     yield put({
