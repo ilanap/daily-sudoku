@@ -21,6 +21,7 @@ export default (
         solved: false,
         showFoundValue: null,
         showSweepValue: null,
+        helperStartIndex: null,
         strategy: strategyTypes.NONE,
         cells: new Array(GRID_SIZE * GRID_SIZE)
     },
@@ -42,6 +43,9 @@ export default (
                 cells: parseOrigDataToCells(state.origData),
                 isSweep: false,
                 solved: false,
+                showFoundValue: null,
+                showSweepValue: null,
+                strategy: strategyTypes.NONE,
                 history: new Array()
             };
         }
@@ -64,8 +68,12 @@ export default (
         case gridActionTypes.SWEEP: {
             let cells = [...state.cells];
             let sweep = state.isSweep === false;
+            let sweepCells = handleOptionalValues(cells);
             if (sweep) {
-                cells = handleOptionalValues(cells);
+                cells = cells.map(item => {
+                    item.sweepValues = sweepCells[item.index];
+                    return item;
+                });
             } else {
                 cells = cells.map(item => {
                     item.sweepValues = [];
@@ -97,7 +105,11 @@ export default (
                 };
             });
             if (state.isSweep) {
-                cells = handleOptionalValues(cells);
+                let sweepCells = handleOptionalValues(cells);
+                cells = cells.map(item => {
+                    item.sweepValues = sweepCells[item.index];
+                    return item;
+                });
             }
             return {
                 ...state,
@@ -127,6 +139,36 @@ export default (
             return {
                 ...state,
                 solved: false,
+                cells: cells
+            };
+        }
+        case gridActionTypes.HELPER_CELL_CLICKED: {
+            let cells = state.cells.map((item, index) => {
+                if (index !== action.payload.cell.index) {
+                    if (item.helperValues.active) {
+                        return {
+                            ...item,
+                            helperValues: {
+                                ...item.helperValues,
+                                active: false
+                            }
+                        };
+                    } else {
+                        return item;
+                    }
+                } else {
+                    return {
+                        ...item,
+                        helperValues: {
+                            ...item.helperValues,
+                            active: true,
+                            activeSide: action.payload.side
+                        }
+                    };
+                }
+            });
+            return {
+                ...state,
                 cells: cells
             };
         }
@@ -191,29 +233,48 @@ export default (
                 history: [historyCell].concat(state.history)
             };
         }
-        case strategyTypes.ONLY_ONE_VALUE: {
+        case gridActionTypes.HELPER_CELL_CHANGED: {
+            let keyData = getKeyValueFromEvent(action.payload);
+            if (keyData === null) {
+                // uninteresting key
+                return state;
+            }
             let cells = [...state.cells];
-            cells = applyStrategy(strategyTypes.ONLY_ONE_VALUE, cells);
+            let cell = cells[action.payload.cell.index];
+            let helperValues = { ...cell.helperValues };
+            helperValues[helperValues.activeSide] = keyData.val;
+            let startIndex = state.helperStartIndex;
+            if (startIndex === null) {
+                startIndex = action.payload.cell.index;
+                helperValues.startedCell = helperValues.activeSide;
+            }
+            cells = cells.map((item, index) => {
+                if (index !== action.payload.cell.index) {
+                    return item;
+                }
+                return {
+                    ...item,
+                    helperValues: helperValues
+                };
+            });
             return {
                 ...state,
-                strategy: strategyTypes.ONLY_ONE_VALUE,
+                helperStartIndex: startIndex,
                 cells: cells
             };
         }
-        case strategyTypes.NONE: {
+
+        case strategyTypes.NONE:
+        case strategyTypes.HELPER_GRID:
+        case strategyTypes.ONLY_ROW_COL_GRID_VALUE:
+        case strategyTypes.ONLY_ONE_VALUE: {
             let cells = [...state.cells];
-            cells = cells.map(item => ({ ...item, strategy: false }));
-            return { ...state, cells };
-        }
-        case strategyTypes.ONLY_ROW_COL_GRID_VALUE: {
-            let cells = [...state.cells];
-            cells = handleOptionalValues(cells);
-            return { ...state, cells };
-        }
-        case strategyTypes.XWING_2: {
-            let cells = [...state.cells];
-            cells = handleOptionalValues(cells);
-            return { ...state, cells };
+            cells = applyStrategy(action.type, cells);
+            return {
+                ...state,
+                strategy: action.type,
+                cells: cells
+            };
         }
         default:
             return state;

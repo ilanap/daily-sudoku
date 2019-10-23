@@ -3,7 +3,7 @@
   border: none;
   color: $textColor;
   padding: 10px 25px;
-  width: ($cellInnerSize*3);
+  width: ($cellInnerSize*2);
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -16,9 +16,7 @@
 }
 .fireworks {
   background-color: $alternativeColor;
-  width: ($cellInnerSize*7);
-  margin-right:$cellInnerSize;
-  margin-left:$cellInnerSize;
+  width: ($cellInnerSize*9);
 }
 .number {
   margin: $gridGap ;

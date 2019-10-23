@@ -15,7 +15,7 @@ const Strategies = ({ clickStrategy }) => {
                 <option value={strategyTypes.ONLY_ROW_COL_GRID_VALUE}>
                     Only value for row/cell/grid
                 </option>
-                <option value={strategyTypes.XWING_2}>X-wing x 2</option>
+                <option value={strategyTypes.HELPER_GRID}>Helper Grid</option>
                 <option value={strategyTypes.NONE}>None </option>
             </select>
         </div>

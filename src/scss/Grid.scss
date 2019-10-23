@@ -1,5 +1,22 @@
+@mixin gridcell($num) {
+  &:nth-child(#{$num}n) {
+    @content
+  }
+}
 .grid {
+
   width: 9* ($cellInnerSize + $gridGap) ;
+
+  .buttons {
+    width: 9* ($cellInnerSize + $gridGap) ;
+    display: flex;
+    justify-content: center;
+    .buttons-right {
+      .button {
+        background-color: lighten($baseColor, 50%) ;
+      }
+    }
+  }
 
   .helpers {
     background-color: lighten($baseColor, 50%);
@@ -18,6 +35,12 @@
       background-color: lighten($strategyColor, 40%);
     }
   }
+  .grids-wrapper {
+    display: grid;
+    grid-gap: $gridGap;
+    grid-template-columns: repeat(2, [col] ($cellInnerSize + $gridGap)*10 ) ;
+    grid-template-rows: ($cellInnerSize + $gridGap) *9 100px;
+  }
   .wrapper {
     display: grid;
     grid-gap: $gridGap;
@@ -31,12 +54,57 @@
     .uneven {
       background-color: lighten( $baseColor, 10% );
     }
+    &.reversed {
+      .active {
+        border: 2px solid lighten( $baseColor, 30% );
+      }
+
+      background-color: $textColor;
+      color: $baseColor;
+      .even {
+        background-color: darken( $textColor, 20% );
+      }
+      .uneven {
+        background-color: darken( $textColor, 10% );
+      }
+    }
   }
 
+
   .cell {
-    color: $textColor;
     border-radius: $borderRadius;
     font-size:$fontBaseSize * 1.5;
+
+    .cellHelper-wrapper {
+      display: grid;
+      grid-template-columns: $cellInnerSize/2 $cellInnerSize/2 ;
+      grid-template-rows: $cellInnerSize;
+
+      .helper-input {
+        margin: 5px;
+        line-height: $cellInnerSize - 10;
+        text-align: center;
+        font-size: $cellInnerSize/2;
+        &.left {
+          background-color: lighten($blue, 40%);
+          &.side-left {
+            background-color: lighten($blue, 10%);
+          }
+          &.started-left {
+            border: 1px solid $baseColor;
+          }
+        }
+        &.right {
+          &.side-right {
+            background-color: lighten($alternativeColor, 10%);
+          }
+          &.started-right {
+            border: 1px solid $baseColor;
+          }
+          background-color: lighten($alternativeColor, 35%);
+        }
+      }
+    }
 
     &.cellValueClass {
       padding-top: $cellInnerSize*.23;

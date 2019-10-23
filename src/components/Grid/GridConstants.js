@@ -6,12 +6,15 @@ export const actionTypes = {
     RESET: 'grid/RESET',
     FIREWORKS: 'grid/FIREWORKS',
     CELL_CLICKED: 'grid/CELL_CLICKED',
+    HELPER_CELL_CLICKED: 'grid/HELPER_CELL_CLICKED',
+    HELPER_CELL_CHANGED: 'grid/HELPER_CELL_CHANGED',
     SHOW_FOUND: 'grid/SHOW_FOUND',
     SHOW_SWEEP: 'grid/SHOW_SWEEP'
 };
 export const strategyTypes = {
     ONLY_ONE_VALUE: 'strategy/ONLY_ONE_VALUE',
     ONLY_ROW_COL_GRID_VALUE: 'strategy/ONLY_ROW_COL_GRID_VALUE',
+    HELPER_GRID: 'stategy/HELPER_GRID',
     XWING_2: 'strategy/XWING_2',
     NONE: 'strategy/NONE'
 };

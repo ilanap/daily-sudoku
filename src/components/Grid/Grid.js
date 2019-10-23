@@ -11,12 +11,13 @@ const getFindCellValue = state =>
     state && state.grid && state.grid.showFoundValue;
 const getSweepCellValue = state =>
     state && state.grid && state.grid.showSweepValue;
-
+const getStrategy = state => state && state.grid && state.grid.strategy;
 const mapStateToProps = state => {
     return {
         cells: getCells(state),
         isSweep: isSweep(state),
         solved: isSolved(state),
+        strategy: getStrategy(state),
         findCellValue: getFindCellValue(state),
         findSweepValue: getSweepCellValue(state)
     };
@@ -34,10 +35,28 @@ function mapDispatchToProps(dispatch) {
                 type: actionTypes.CELL_CLICKED,
                 payload: { cell: cell }
             }),
+        onHelperClick: (cell, side) =>
+            dispatch({
+                type: actionTypes.HELPER_CELL_CLICKED,
+                payload: { cell: cell, side: side }
+            }),
+        onHelperChange: (e, cell) => {
+            dispatch({
+                type: actionTypes.HELPER_CELL_CHANGED,
+                payload: {
+                    keyCode: e.which,
+                    isShift: e.shiftKey,
+                    cell: cell
+                }
+            });
+        },
         onUndo: () =>
             dispatch({
                 type: actionTypes.UNDO
             }),
+        onPrint: () => {
+            alert(0);
+        },
         onReset: () =>
             dispatch({
                 type: actionTypes.RESET
@@ -77,13 +96,17 @@ class Grid extends React.Component {
         onSweep: PropTypes.func,
         fireworks: PropTypes.func,
         onClick: PropTypes.func,
+        onPrint: PropTypes.func,
+        onHelperClick: PropTypes.func,
+        onHelperChange: PropTypes.func,
         onShowFoundCells: PropTypes.func,
         onShowSweepCells: PropTypes.func,
         clickStrategy: PropTypes.func,
         solved: PropTypes.bool,
         isSweep: PropTypes.bool,
         findCellValue: PropTypes.number,
-        findSweepValue: PropTypes.number
+        findSweepValue: PropTypes.number,
+        strategy: PropTypes.string
     };
 
     render() {
@@ -95,31 +118,41 @@ class Grid extends React.Component {
             isSweep,
             onSweep,
             onClick,
+            onPrint,
+            onHelperClick,
+            onHelperChange,
             fireworks,
             onShowFoundCells,
             onShowSweepCells,
             findCellValue,
             findSweepValue,
             solved,
-            clickStrategy
+            clickStrategy,
+            strategy
         } = this.props;
         return (
-            <GridView
-                onChange={onChange}
-                onClick={onClick}
-                onUndo={onUndo}
-                onReset={onReset}
-                onSweep={onSweep}
-                isSweep={isSweep}
-                solved={solved}
-                fireworks={fireworks}
-                cells={cells}
-                onShowFoundCells={onShowFoundCells}
-                onShowSweepCells={onShowSweepCells}
-                findCellValue={findCellValue}
-                findSweepValue={findSweepValue}
-                clickStrategy={clickStrategy}
-            />
+            <div>
+                <GridView
+                    onChange={onChange}
+                    onClick={onClick}
+                    onHelperClick={onHelperClick}
+                    onHelperChange={onHelperChange}
+                    onUndo={onUndo}
+                    onPrint={onPrint}
+                    onReset={onReset}
+                    onSweep={onSweep}
+                    isSweep={isSweep}
+                    solved={solved}
+                    fireworks={fireworks}
+                    cells={cells}
+                    onShowFoundCells={onShowFoundCells}
+                    onShowSweepCells={onShowSweepCells}
+                    findCellValue={findCellValue}
+                    findSweepValue={findSweepValue}
+                    clickStrategy={clickStrategy}
+                    strategy={strategy}
+                />
+            </div>
         );
     }
 }

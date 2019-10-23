@@ -44,15 +44,17 @@ const Cell = ({
                 optionValuesClass
             )}>
             {cell.value !== null && <div>{cell.value}</div>}
-            {!cell.value && cell.sweepValues.length > 0 && (
-                <div className="cellOptionalValues-wrapper">
-                    {cell.sweepValues.map((val, i) => (
-                        <div key={i} className="cellOptionalValues-cell">
-                            {val}
-                        </div>
-                    ))}
-                </div>
-            )}
+            {!cell.value &&
+                cell.sweepValues !== undefined &&
+                cell.sweepValues.length > 0 && (
+                    <div className="cellOptionalValues-wrapper">
+                        {cell.sweepValues.map((val, i) => (
+                            <div key={i} className="cellOptionalValues-cell">
+                                {val}
+                            </div>
+                        ))}
+                    </div>
+                )}
         </div>
     );
 };

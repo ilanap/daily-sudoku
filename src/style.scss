@@ -31,3 +31,8 @@ h3 {
   font-size: $fontBaseSize * 1.5;
   margin-bottom: 3px;
 }
+@media print {
+  h3, .noPrint {
+    display: none;
+  }
+}

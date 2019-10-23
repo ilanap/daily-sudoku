@@ -20,19 +20,25 @@ export function getFieldsSweepData(cells) {
 }
 export function handleOptionalValues(cells) {
     let sweepData = getFieldsSweepData(cells);
+    let optionalValuesCells = new Array(GRID_SIZE * GRID_SIZE);
     cells.forEach(cell => {
         if (!cell.given) {
             // init to to all possible values. will then remove the ones that are already presend
-            cell.sweepValues = Array.from(Array(GRID_SIZE), (e, i) => i + 1);
+            optionalValuesCells[cell.index] = Array.from(
+                Array(GRID_SIZE),
+                (e, i) => i + 1
+            );
             CHECK_FIELDS.forEach(field => {
                 let values = sweepData[field][cell[field]];
-                cell.sweepValues = cell.sweepValues.filter(
-                    val => !values.includes(val)
-                );
+                optionalValuesCells[cell.index] = optionalValuesCells[
+                    cell.index
+                ].filter(val => !values.includes(val));
             });
+        } else {
+            optionalValuesCells[cell.index] = [];
         }
     });
-    return cells;
+    return optionalValuesCells;
 }
 
 export function updateOptionalValues(cells, changedCell) {
@@ -63,6 +69,13 @@ export function parseOrigDataToCells(strArr) {
             index: i,
             error: false,
             active: false,
+            helperValues: {
+                left: null,
+                right: null,
+                active: false,
+                activeSide: null,
+                startedCell: null
+            },
             sweepValues: []
         };
         if (strArr[i] !== '.') {
