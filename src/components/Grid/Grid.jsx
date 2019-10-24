@@ -28,6 +28,23 @@ const Grid = ({
 }) => {
     return (
         <div>
+            <div className="grid">
+                <div className="print-wrapper">
+                    {cells.map((cell, i) => {
+                        return (
+                            <Cell
+                                key={i}
+                                cell={cell}
+                                onClick={onClick}
+                                isSweep={isSweep}
+                                onChange={onChange}
+                                findCellValue={findCellValue}
+                                findSweepValue={findSweepValue}
+                            />
+                        );
+                    })}
+                </div>
+            </div>
             <div className="grid noPrint">
                 {solved && (
                     <div className="pyro">

@@ -1,9 +1,55 @@
-@mixin gridcell($num) {
-  &:nth-child(#{$num}n) {
-    @content
+@mixin border($place) {
+  border-#{$place}: 2px solid;
+}
+
+@mixin printRow($from: 1, $to: 10){
+  @for $i from $from to $to{
+    &:nth-child(27n + #{$i}) {
+      @include border("top")
+    }
   }
 }
+
 .grid {
+  @media not print {
+    .print-wrapper {
+      display: none;
+    }
+  }
+  @media print {
+    .checkgrid, .buttons, .helpers, .button {
+      display: none;
+    }
+
+    .print-wrapper {
+      display: grid;
+      grid-template-columns: repeat(9, [col] $cellInnerSize  ) ;
+      grid-template-rows: repeat(9, [row] $cellInnerSize  );
+      grid-gap: 0px;
+      .cell {
+
+        border-radius: 0px;
+        background-color: white;
+        color: black;
+        border-style: dashed;
+        border-width: 1px;
+
+        @include printRow(1,10);
+
+        &:nth-child(3n + 1) {
+          @include border("left")
+        }
+        &:nth-child(9n) {
+          @include border("right")
+        }
+        &:nth-last-of-type(-n+9) {
+          @include border("bottom")
+        }
+      }
+    }
+
+  }
+
 
   width: 9* ($cellInnerSize + $gridGap) ;
 
