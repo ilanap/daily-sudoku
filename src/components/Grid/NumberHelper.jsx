@@ -6,7 +6,7 @@ import classnames from 'classnames';
 const NumberHelper = ({ onClick, cellValue, className, title }) => {
     let numbers = Array.from(Array(GRID_SIZE).keys());
     return (
-        <div>
+        <div className="helper">
             <label className="label">{title}:</label>
             {numbers.map((n, i) => {
                 let activeClass = cellValue === i + 1 ? 'active' : null;

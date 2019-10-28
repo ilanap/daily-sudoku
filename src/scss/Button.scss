@@ -2,7 +2,7 @@
   background-color: $blue;
   border: none;
   color: $textColor;
-  padding: 10px 25px;
+  padding: 5px;
   width: ($cellInnerSize*2);
   text-align: center;
   text-decoration: none;
@@ -10,34 +10,35 @@
   font-size: $fontBaseSize;
   font-weight: bold;
   border-radius: $borderRadius;
-  margin-top : $gridGap*2;
-  margin-left: $gridGap;
-  margin-right: $gridGap*2;
+  margin : $gridGap;
 }
+
 .fireworks {
   background-color: $alternativeColor;
   width: ($cellInnerSize*9);
 }
+
+@mixin helperNumbers($color) {
+  background-color: lighten($color, 30%);
+  &.active {
+    background-color: $color;
+  }
+
+}
 .number {
   margin: $gridGap ;
-  width: 30px;
-  padding: $gridGap *2;
+  width: ($cellInnerSize/2);
+  padding: $gridGap;
   font-size: $fontBaseSize * .75;
   &.foundNumber {
-    background-color: lighten($blue, 30%);
-    &.active {
-      background-color: $blue;
-    }
+    @include helperNumbers($blue)
   }
   &.sweepNumber {
-    background-color: lighten($alternativeColor, 30%);
-    &.active {
-      background-color: $alternativeColor;
-    }
+    @include helperNumbers($alternativeColor)
   }
   &.off {
     background-color: lighten($baseColor, 40%);
     text-align: center;
-    width: 60px;
+    width: ($cellInnerSize);
   }
 }

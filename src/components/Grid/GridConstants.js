@@ -13,10 +13,10 @@ export const actionTypes = {
 };
 export const strategyTypes = {
     ONLY_ONE_VALUE: 'strategy/ONLY_ONE_VALUE',
-    ONLY_ROW_COL_GRID_VALUE: 'strategy/ONLY_ROW_COL_GRID_VALUE',
+    ONLY_VALUE_IN_REGION: 'strategy/ONLY_VALUE_IN_REGION',
     HELPER_GRID: 'stategy/HELPER_GRID',
     XWING_2: 'strategy/XWING_2',
     NONE: 'strategy/NONE'
 };
 export const SUB_GRID_SIZE = Math.sqrt(GRID_SIZE);
-export const CHECK_FIELDS = ['column', 'row', 'subGrid'];
+export const REGIONS = ['column', 'row', 'subGrid'];

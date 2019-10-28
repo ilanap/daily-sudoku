@@ -59,7 +59,7 @@
     justify-content: center;
     .buttons-right {
       .button {
-        background-color: lighten($baseColor, 50%) ;
+        background-color: lighten($blue, 25%) ;
       }
     }
   }
@@ -69,12 +69,13 @@
     border-radius: $borderRadius;
     padding: $gridGap*2;
   }
-
+  .helper {
+    line-height: 30px;
+  }
   .label {
     width: 175px;
-    height: 30px;
     display:inline-block;
-
+    font-size: $fontBaseSize * .75;
   }
   select {
     &.strategy {
@@ -162,6 +163,9 @@
     }
     &.active {
       border: 2px solid $backgroundColorGrid;
+    }
+    &.given {
+      color: darken(#ffffff, 20%);
     }
     &.strategy {
       background-color: $strategyColor;

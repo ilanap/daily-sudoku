@@ -1,56 +1,54 @@
 import {
     GRID_SIZE,
-    CHECK_FIELDS,
+    REGIONS,
     SUB_GRID_SIZE
 } from 'components/Grid/GridConstants';
 
-export function getFieldsSweepData(cells) {
+export function getValuesForRegions(cells) {
     let sweepData = {};
-    CHECK_FIELDS.forEach(field => {
+    REGIONS.forEach(field => {
         sweepData[field] = new Array(GRID_SIZE);
     });
     for (let i = 0; i < GRID_SIZE; i++) {
-        CHECK_FIELDS.forEach(field => {
-            sweepData[field][i] = cells
-                .filter(cell => cell.value !== null && cell[field] === i)
+        REGIONS.forEach(region => {
+            sweepData[region][i] = cells
+                .filter(cell => cell.value !== null && cell[region] === i)
                 .map(cell => cell.value);
         });
     }
     return sweepData;
 }
-export function handleOptionalValues(cells) {
-    let sweepData = getFieldsSweepData(cells);
-    let optionalValuesCells = new Array(GRID_SIZE * GRID_SIZE);
+export function getOptionalValues(cells) {
+    let optionalValues = [];
+    let regionData = getValuesForRegions(cells);
     cells.forEach(cell => {
         if (!cell.given) {
-            // init to to all possible values. will then remove the ones that are already presend
-            optionalValuesCells[cell.index] = Array.from(
-                Array(GRID_SIZE),
-                (e, i) => i + 1
-            );
-            CHECK_FIELDS.forEach(field => {
-                let values = sweepData[field][cell[field]];
-                optionalValuesCells[cell.index] = optionalValuesCells[
-                    cell.index
-                ].filter(val => !values.includes(val));
+            let foundValues = [];
+            // get all the values that are present in the regions to know what
+            // is not an optional value later on
+            REGIONS.forEach(region => {
+                foundValues = foundValues.concat(
+                    regionData[region][cell[region]]
+                );
             });
+            let optionalValuesCells = [];
+            for (let i = 1; i <= GRID_SIZE; i++) {
+                if (!foundValues.includes(i)) {
+                    optionalValuesCells.push(i);
+                }
+            }
+            optionalValues[cell.index] = optionalValuesCells;
         } else {
-            optionalValuesCells[cell.index] = [];
+            optionalValues[cell.index] = [];
         }
     });
-    return optionalValuesCells;
+    return optionalValues;
 }
 
 export function updateOptionalValues(cells, changedCell) {
     cells.forEach(cell => {
         if (cell.index != changedCell.index && cell.sweepValues !== undefined) {
-            let isRelevantCell = false;
-            CHECK_FIELDS.forEach(field => {
-                if (cell[field] == changedCell[field]) {
-                    isRelevantCell = true;
-                }
-            });
-            if (isRelevantCell) {
+            if (isCellRelationship(cell, changedCell)) {
                 if (cell.sweepValues.includes(changedCell.value)) {
                     cell.sweepValues = cell.sweepValues.filter(
                         val => val != changedCell.value
@@ -84,12 +82,13 @@ export function parseOrigDataToCells(strArr) {
         } else {
             cellData.value = null;
         }
+        // setting identifiers for relationships
         cellData.row = Math.floor(i / GRID_SIZE);
         cellData.column = i % GRID_SIZE;
-
         let subGridForRow = Math.floor(cellData.row / SUB_GRID_SIZE);
         let subGridForCol = Math.floor(cellData.column / SUB_GRID_SIZE);
         cellData.subGrid = subGridForRow * SUB_GRID_SIZE + subGridForCol;
+
         outputData[i] = cellData;
     }
     return outputData;
@@ -113,11 +112,48 @@ export function checkError(grid, cell) {
     let error = grid.find(
         c =>
             c.index !== cell.index &&
-            (c.row === cell.row ||
-                c.column === cell.column ||
-                c.subGrid === cell.subGrid) &&
+            isCellRelationship(c, cell) &&
             c.value === cell.value
     );
 
     return error != null;
+}
+
+/***
+ * Checks whether two cells are related by row/column or subgrid
+ * @param cell
+ * @param other
+ * @returns {boolean}
+ */
+export function isCellRelationship(cell, other) {
+    return (
+        other.row === cell.row ||
+        other.column === cell.column ||
+        other.subGrid == cell.subGrid
+    );
+}
+
+/***
+ * Used on undo, to check whether the undo affect the sweepvalues and if it should be updated
+ * @param grid
+ * @param cell
+ * @param changeData
+ * @returns {boolean}
+ */
+export function isValueRelevantForSweep(grid, cell, changeData) {
+    if (
+        cell.value === null &&
+        isCellRelationship(cell, grid[changeData.index])
+    ) {
+        let testCell = {
+            value: grid[changeData.index].value,
+            row: cell.row,
+            column: cell.column,
+            subGrid: cell.subGrid
+        };
+        // if we can set the new value, then we should add it to the sweepvalues
+        grid[changeData.index].value = changeData.value;
+        return checkError(grid, testCell) == false;
+    }
+    return false;
 }

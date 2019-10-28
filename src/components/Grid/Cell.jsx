@@ -10,6 +10,7 @@ const Cell = ({
     findSweepValue
 }) => {
     let gridClass = cell.subGrid % 2 ? 'even' : 'uneven';
+    let givenClass = cell.given ? 'given' : null;
     let errorClass = cell.error ? 'error' : null;
     let foundCellClass =
         !cell.error && cell.value !== null && cell.value === findCellValue
@@ -33,6 +34,7 @@ const Cell = ({
             onClick={cell.given ? null : () => onClick(cell)}
             onKeyDown={cell.given ? null : e => onChange(e, cell)}
             className={classnames(
+                givenClass,
                 activeClass,
                 strategyClass,
                 foundCellClass,

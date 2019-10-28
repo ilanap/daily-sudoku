@@ -1,5 +1,5 @@
-import { CHECK_FIELDS, GRID_SIZE, strategyTypes } from './GridConstants';
-import { handleOptionalValues } from './GridHelper';
+import { REGIONS, GRID_SIZE, strategyTypes } from './GridConstants';
+import { getOptionalValues } from './GridHelper';
 
 export function applyStrategy(type, cells) {
     switch (type) {
@@ -20,7 +20,7 @@ export function applyStrategy(type, cells) {
             return returnCells;
         }
         case strategyTypes.ONLY_ONE_VALUE: {
-            let sweepValues = handleOptionalValues(cells);
+            let sweepValues = getOptionalValues(cells);
             let returnCells = cells.map(item => {
                 item.strategy = false;
                 if (item.value) {
@@ -34,52 +34,58 @@ export function applyStrategy(type, cells) {
             });
             return returnCells;
         }
-        case strategyTypes.ONLY_ROW_COL_GRID_VALUE: {
-            let sweepValues = handleOptionalValues(cells);
-            let strategyCells = [];
+        case strategyTypes.ONLY_VALUE_IN_REGION: {
+            // initializing our arrays.
             let sweepData = {};
-            CHECK_FIELDS.forEach(field => {
-                sweepData[field] = new Array(GRID_SIZE);
+            REGIONS.forEach(region => {
+                sweepData[region] = new Array(GRID_SIZE);
+                for (let i = 0; i < GRID_SIZE; i++) {
+                    sweepData[region][i] = new Array(GRID_SIZE);
+                }
             });
-            for (let i = 0; i < GRID_SIZE; i++) {
-                CHECK_FIELDS.forEach(field => {
-                    // first get all cells with optional values
-                    let sweepCells = cells.filter(
-                        c => sweepValues[c.index].length > 0 && c[field] === i
-                    );
-                    // mark the numbers, set index of cell when found, unmark if we find more than one
-                    let foundValues = new Array(GRID_SIZE);
-                    sweepCells.forEach(c => {
-                        sweepValues[c.index].forEach(val => {
-                            if (foundValues[val] === undefined) {
-                                foundValues[val] = c.index;
-                            } else if (foundValues !== -1) {
-                                foundValues[val] = -1;
+            // mapping the values per region. marking the ones that are found and that are found more than once
+            getOptionalValues(cells).forEach((values, i) => {
+                if (values.length) {
+                    REGIONS.forEach(region => {
+                        values.forEach(val => {
+                            let regionIndex = cells[i][region];
+                            if (
+                                sweepData[region][regionIndex][val] ===
+                                undefined
+                            ) {
+                                sweepData[region][regionIndex][val] = i;
+                            } else {
+                                sweepData[region][regionIndex][val] = -1;
                             }
                         });
                     });
-                    // only taking the indeces and adding in to the cells that fulfill the strategy
-                    foundValues.filter(v => {
-                        if (
-                            v !== undefined &&
-                            v !== -1 &&
-                            !strategyCells.includes(v)
-                        ) {
-                            strategyCells.push(v);
-                        }
-                    });
-                });
-            }
-            cells = cells.map(item => {
-                if (item.value) {
-                    return item;
+                }
+            });
+            // now we will get an array with all the indices that have a singular value for the region
+            let strategyCells = [];
+            REGIONS.forEach(region => {
+                for (let i = 0; i < GRID_SIZE; i++) {
+                    strategyCells = strategyCells.concat(
+                        sweepData[region][i].filter(
+                            val => val !== undefined && val !== -1
+                        )
+                    );
+                }
+            });
+            // last but not least set the flag
+            cells = cells.map(cell => {
+                if (cell.value) {
+                    return cell;
                 } else {
                     return {
-                        ...item,
-                        strategy: strategyCells.includes(item.index)
+                        ...cell,
+                        strategy: strategyCells.includes(cell.index)
                     };
                 }
             });
+            return cells;
+        }
+        case strategyTypes.XWING_2: {
             return cells;
         }
         default:

@@ -5,13 +5,14 @@ import {
     strategyTypes
 } from 'components/Grid/GridConstants';
 import {
-    handleOptionalValues,
+    getOptionalValues,
     updateOptionalValues,
     parseOrigDataToCells,
     getKeyValueFromEvent,
     checkError
 } from './GridHelper.js';
 import { applyStrategy } from './StrategyHelper.js';
+import { isValueRelevantForSweep } from './GridHelper';
 
 export default (
     state = {
@@ -68,22 +69,14 @@ export default (
         case gridActionTypes.SWEEP: {
             let cells = [...state.cells];
             let sweep = state.isSweep === false;
-            let sweepCells = handleOptionalValues(cells);
-            if (sweep) {
-                cells = cells.map(item => {
-                    item.sweepValues = sweepCells[item.index];
-                    return item;
-                });
-            } else {
-                cells = cells.map(item => {
-                    item.sweepValues = [];
-                    return item;
-                });
-            }
+            let sweepCells = getOptionalValues(cells);
+            cells = cells.map(item => {
+                item.sweepValues = sweep ? sweepCells[item.index] : [];
+                return item;
+            });
             return {
                 ...state,
                 cells: cells,
-                solved: false,
                 isSweep: sweep
             };
         }
@@ -92,80 +85,72 @@ export default (
                 return state;
             }
             let lastChange = state.history.slice(0, 1);
+            let oldValue = state.cells[lastChange[0].index].value;
             let cells = state.cells.map((item, index) => {
                 if (index !== lastChange[0].index) {
-                    return {
+                    // if we are in sweep mode - then we have to reset the sweep values in the grid with our value,
+                    // that is not stored in history
+                    let returnItem = {
                         ...item,
                         active: false
                     };
+                    if (state.isSweep && item.value === null) {
+                        if (
+                            oldValue !== null &&
+                            item.sweepValues !== null &&
+                            !item.sweepValues.includes(lastChange[0].value)
+                        ) {
+                            if (
+                                isValueRelevantForSweep(
+                                    state.cells,
+                                    item,
+                                    lastChange[0]
+                                )
+                            ) {
+                                returnItem.sweepValues.push(oldValue);
+                                console.log(returnItem);
+                            }
+                        }
+                    }
+                    return returnItem;
+                } else {
+                    return {
+                        ...item,
+                        ...lastChange[0]
+                    };
                 }
-                return {
-                    ...item,
-                    ...lastChange[0]
-                };
             });
-            if (state.isSweep) {
-                let sweepCells = handleOptionalValues(cells);
-                cells = cells.map(item => {
-                    item.sweepValues = sweepCells[item.index];
-                    return item;
-                });
-            }
             return {
                 ...state,
                 history: state.history.slice(1),
-                solved: false,
                 cells: cells
             };
         }
         case gridActionTypes.CELL_CLICKED: {
-            //resetting previously clicked cell and setting current
             let cells = state.cells.map((item, index) => {
-                if (index !== action.payload.cell.index) {
-                    if (item.active) {
-                        return {
-                            ...item,
-                            active: false
-                        };
-                    } else {
-                        return item;
-                    }
-                }
                 return {
                     ...item,
-                    active: true
+                    active: index === action.payload.cell.index
                 };
             });
             return {
                 ...state,
-                solved: false,
                 cells: cells
             };
         }
         case gridActionTypes.HELPER_CELL_CLICKED: {
             let cells = state.cells.map((item, index) => {
-                if (index !== action.payload.cell.index) {
-                    if (item.helperValues.active) {
-                        return {
-                            ...item,
-                            helperValues: {
-                                ...item.helperValues,
-                                active: false
-                            }
-                        };
-                    } else {
-                        return item;
+                return {
+                    ...item,
+                    helperValues: {
+                        ...item.helperValues,
+                        active: index === action.payload.cell.index,
+                        activeSide:
+                            index === action.payload.cell.index
+                                ? action.payload.side
+                                : null
                     }
-                } else {
-                    return {
-                        ...item,
-                        helperValues: {
-                            ...item.helperValues,
-                            active: true,
-                            activeSide: action.payload.side
-                        }
-                    };
-                }
+                };
             });
             return {
                 ...state,
@@ -266,7 +251,7 @@ export default (
 
         case strategyTypes.NONE:
         case strategyTypes.HELPER_GRID:
-        case strategyTypes.ONLY_ROW_COL_GRID_VALUE:
+        case strategyTypes.ONLY_VALUE_IN_REGION:
         case strategyTypes.ONLY_ONE_VALUE: {
             let cells = [...state.cells];
             cells = applyStrategy(action.type, cells);

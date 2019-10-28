@@ -3,7 +3,7 @@ import { strategyTypes } from 'components/Grid/GridConstants';
 
 const Strategies = ({ clickStrategy }) => {
     return (
-        <div>
+        <div className="helper">
             <label className="label">Solver Helpers: </label>
             <select className="strategy" onChange={evt => clickStrategy(evt)}>
                 <option value={strategyTypes.NONE}>
@@ -12,7 +12,7 @@ const Strategies = ({ clickStrategy }) => {
                 <option value={strategyTypes.ONLY_ONE_VALUE}>
                     Cell with only one value
                 </option>
-                <option value={strategyTypes.ONLY_ROW_COL_GRID_VALUE}>
+                <option value={strategyTypes.ONLY_VALUE_IN_REGION}>
                     Only value for row/cell/grid
                 </option>
                 <option value={strategyTypes.HELPER_GRID}>Helper Grid</option>

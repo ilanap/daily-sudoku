@@ -3,11 +3,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-
 module.exports = () => {
     let lintOptions = { fix: false, failOnError: false };
     let srcPath = [path.resolve(__dirname, 'src')];
-    let modulePath = [path.resolve('.'), path.join(__dirname, 'node_modules'), path.join(__dirname, 'tools')];
+    let modulePath = [
+        path.resolve('.'),
+        path.join(__dirname, 'node_modules'),
+        path.join(__dirname, 'tools')
+    ];
     let webpackConfig = {
         performance: { hints: false },
         entry: path.resolve(__dirname, 'src/index.js'),
@@ -78,7 +81,9 @@ module.exports = () => {
                     promise1.then(function() {
                         let mockData = null;
                         if (req.query.difficulty !== undefined) {
-                            mockData = require('./tools/mocks/mockData' + req.query.difficulty + '.json');
+                            mockData = require('./tools/mocks/mockData' +
+                                req.query.difficulty +
+                                '.json');
                         } else {
                             mockData = require('./tools/mocks/mockData.json');
                         }
