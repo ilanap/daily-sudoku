@@ -25,7 +25,7 @@ module.exports = () => {
             }
         },
         output: {
-            path: path.resolve(__dirname, 'dist'),
+            path: path.resolve(__dirname, 'static'),
             filename: 'index_bundle_[hash].js'
         },
         module: {
@@ -66,7 +66,7 @@ module.exports = () => {
         },
         plugins: [
             new HtmlWebpackPlugin({
-                template: path.resolve(__dirname, 'index.html'),
+                template: path.resolve(__dirname, 'sudoku.html'),
                 contextPath: '/'
             })
         ],
