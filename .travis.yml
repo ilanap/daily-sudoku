@@ -3,8 +3,6 @@ python:
   - 3.6
 node_js:
   - 10
-script:
-  - pytest
 before_install:
   - sudo pip install -r requirements.txt
   - openssl aes-256-cbc -K $encrypted_34ecf922df88_key -iv $encrypted_34ecf922df88_iv
