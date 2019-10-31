@@ -5,4 +5,4 @@ handlers:
     static_dir: dist
 
   - url: /.*
-    script: webapp.py
+    script: auto
