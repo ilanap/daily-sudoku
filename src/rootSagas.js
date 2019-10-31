@@ -16,7 +16,7 @@ function* loadExternalSudokuData() {
     let now = new Date();
     let url = '/sudoku';
     let queryParams = yield select(getQueryParams);
-    if (queryParams !== null) {
+    if (queryParams !== null && queryParams !== '') {
         url += queryParams + '&';
     } else {
         url += '?';

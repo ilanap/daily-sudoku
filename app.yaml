@@ -1,11 +1,10 @@
-runtime: python27
+runtime: python37
 api_version: 1
 threadsafe: false
 
 handlers:
-- url: /dist
-  static_dir: dist
+  - url: /dist
+    static_dir: dist
 
-- url: /.*
-  script: webapp.py
-
+  - url: /.*
+    script: webapp.py

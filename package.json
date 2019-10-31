@@ -4,11 +4,13 @@
 	"description": "My Daily Sudoku",
 	"scripts": {
 		"start": "webpack-dev-server --mode=development --progress --hot --inline",
+		"build": "webpack --config webpack.config.js --mode production",
 		"lint-fix": "eslint --fix  --ext .js --ext .jsx src"
 	},
 	"dependencies": {
 		"axios": "^0.18.0",
 		"classnames": "^2.2.6",
+		"express": "^4.17.1",
 		"prop-types": "^15.6.1",
 		"react": "^16.8.0",
 		"react-dom": "^16.8.0",
