@@ -11,6 +11,8 @@ before_install:
   - tar -xzf credentials.tar.gz
 after_success:
   - npm run build
+  - ls -l
+  - ls -l static
 deploy:
   provider: gae
   skip_cleanup: true

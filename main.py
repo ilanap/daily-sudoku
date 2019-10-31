@@ -9,7 +9,7 @@ from google.appengine.api import urlfetch
 
 class MainPage(webapp2.RequestHandler):
 	def get(self):
-		self.redirect("/index.html")
+		self.redirect("/static/index.html")
 
 
 class Sudoku(webapp2.RequestHandler):
