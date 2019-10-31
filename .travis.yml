@@ -15,7 +15,9 @@ deploy:
   keyfile: client-secret.json
   project: mysudokuhelper
   default: true
-  on: master
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^(master|react)$
 # safelist
 branches:
   only:
