@@ -15,8 +15,9 @@ function* loadExternalSudokuData(payload) {
         type: loaderActionTypes.SHOW
     });
     let date = null;
+    let today = new Date();
     if (payload === null) {
-        date = new Date();
+        date = today;
     } else {
         let current = yield select(getMainPage);
         let day = current.date.day;
@@ -25,7 +26,16 @@ function* loadExternalSudokuData(payload) {
         } else {
             day = day - 1;
         }
+        let tomorrow = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate() + 1
+        );
         date = new Date(current.date.year, current.date.month, day);
+        if (date.getTime() >= tomorrow.getTime()) {
+            console.warn('No puzzle data for future...');
+            date = today;
+        }
     }
     let url = '/sudoku';
     let queryParams = yield select(getQueryParams);

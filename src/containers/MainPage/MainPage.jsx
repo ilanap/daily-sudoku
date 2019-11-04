@@ -17,11 +17,11 @@ const MainPage = ({ data, onPrevious, onNext }) => (
                 <a href="http://www.dailysudoku.com/">Daily Sudoku</a>
                 <br />
                 <a href="#" onClick={onPrevious}>
-                    Previous
+                    Previous Day
                 </a>{' '}
                 |{' '}
                 <a href="#" onClick={onNext}>
-                    Next
+                    Next Day
                 </a>
                 <Grid />
             </div>

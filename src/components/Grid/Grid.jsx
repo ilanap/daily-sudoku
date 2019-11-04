@@ -58,13 +58,13 @@ const Grid = ({
                         onClick={onShowFoundCells}
                         cellValue={findCellValue}
                         className="foundNumber"
-                        title="Search Found Numbers"
+                        title="Found Numbers"
                     />
                     <NumberHelper
                         onClick={onShowSweepCells}
                         cellValue={findSweepValue}
                         className="sweepNumber"
-                        title="Search Swept Numbers"
+                        title="Swept Numbers"
                     />
                     <Strategies clickStrategy={clickStrategy} />
                 </div>

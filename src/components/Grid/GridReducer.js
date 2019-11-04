@@ -50,16 +50,22 @@ export default (
                 history: new Array()
             };
         }
-        case gridActionTypes.SHOW_FOUND:
+        case gridActionTypes.SHOW_FOUND: {
+            let val =
+                state.showFoundValue === action.payload ? null : action.payload;
             return {
                 ...state,
-                showFoundValue: action.payload
+                showFoundValue: val
             };
-        case gridActionTypes.SHOW_SWEEP:
+        }
+        case gridActionTypes.SHOW_SWEEP: {
+            let val =
+                state.showSweepValue === action.payload ? null : action.payload;
             return {
                 ...state,
-                showSweepValue: action.payload
+                showSweepValue: val
             };
+        }
         case gridActionTypes.FIREWORKS: {
             return {
                 ...state,

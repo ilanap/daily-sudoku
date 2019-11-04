@@ -4,6 +4,7 @@
   color: $textColor;
   padding: 5px;
   width: ($cellInnerSize*2);
+  height: 30px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -28,6 +29,7 @@
 .number {
   margin: $gridGap ;
   width: ($cellInnerSize/2);
+  height: 25px;
   padding: $gridGap;
   font-size: $fontBaseSize * .75;
   &.foundNumber {
@@ -39,6 +41,6 @@
   &.off {
     background-color: lighten($baseColor, 40%);
     text-align: center;
-    width: ($cellInnerSize);
+    width: 35px;
   }
 }
