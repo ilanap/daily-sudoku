@@ -3,11 +3,11 @@ import Loader from 'components/Loader/Loader.js';
 import Grid from 'components/Grid/Grid.js';
 import { difficulties } from './MainPageConstants.js';
 
-const MainPage = ({ data, onPrevious, onNext }) => (
+const MainPage = ({ data, onPrevious, onNext, isLoading }) => (
     <div className="main">
         <h3> Daily Sudoku Helper</h3>
-        {data.title === undefined && <Loader />}
-        {data.title !== undefined && (
+        {isLoading && <Loader />}
+        {!isLoading && (
             <div>
                 <b>
                     {' '}

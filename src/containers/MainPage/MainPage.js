@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import MainPageView from './MainPage.jsx';
 
 export const getMainPage = state => state && state.mainpage;
+export const isLoading = state =>
+    state && state.loader && state.loader.isLoading;
 
 function mapDispatchToProps(dispatch) {
     return {
@@ -29,6 +31,7 @@ function mapDispatchToProps(dispatch) {
 
 const mapStateToProps = state => {
     return {
+        isLoading: isLoading(state),
         data: getMainPage(state)
     };
 };
@@ -48,6 +51,7 @@ class MainPage extends React.Component {
             <MainPageView
                 data={this.props.data}
                 onNext={this.props.onNext}
+                isLoading={this.props.isLoading}
                 onPrevious={this.props.onPrevious}
             />
         );

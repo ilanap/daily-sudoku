@@ -18,6 +18,10 @@
   }
 }
 
+.main-disabled {
+  disabled: true;
+}
+
 .grid {
   @media not print {
    .print-wrapper {
