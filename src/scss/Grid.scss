@@ -1,22 +1,33 @@
-@mixin border($place) {
-  border-#{$place}: 2px solid;
+@mixin border($place, $width, $color: $borderColor) {
+  border-#{$place}: $width solid $color;
 }
 
-@mixin printRow($from: 1, $to: 10){
+@mixin printRowTop($width, $from: 1, $to: 10){
   @for $i from $from to $to{
     &:nth-child(27n + #{$i}) {
-      @include border("top")
+      @include border("top", $width)
     }
   }
 }
+@mixin printRowBottom($width, $from: 1, $to: 10){
+  @for $i from $from to $to{
+    &:nth-child(27n + #{$i + 18}) {
+      @include border("bottom", $width)
+    }
+
+  }
+}
+
+
+
 
 .grid {
   @media not print {
-    .print-wrapper {
-      display: none;
-    }
-  }
-  @media print {
+   .print-wrapper {
+     display: none;
+   }
+ }
+ @media print {
     .checkgrid, .buttons, .helpers, .button {
       display: none;
     }
@@ -28,23 +39,34 @@
       grid-gap: 0px;
       .cell {
 
+        &.given {
+          color: darken(#ffffff, 20%);
+        }
+
+
         border-radius: 0px;
         background-color: white;
         color: black;
         border-style: dashed;
         border-width: 1px;
-
-        @include printRow(1,10);
-
+        &.given {
+          color: $baseColor;
+        }
         &:nth-child(3n + 1) {
-          @include border("left")
+          @include border("left", $printBorderWidth)
         }
-        &:nth-child(9n) {
-          @include border("right")
+
+        &:nth-child(3n) {
+          @include border("right", $printBorderWidth)
         }
+
         &:nth-last-of-type(-n+9) {
-          @include border("bottom")
+          @include border("bottom", $printBorderWidth)
         }
+
+        @include printRowTop($printBorderWidth, 1,10);
+        @include printRowBottom($printBorderWidth, 1,10);
+
       }
     }
 
@@ -91,15 +113,14 @@
   .wrapper {
     display: grid;
     grid-gap: $gridGap;
-    grid-template-columns: repeat(9, [col] $cellInnerSize ) ;
-    grid-template-rows: repeat(9, [row] $cellInnerSize  );
-    background-color: $backgroundColorGrid;
+    grid-template-columns: repeat(9, [col] $cellInnerSize  ) ;
+    grid-template-rows: repeat(9, [row] $cellInnerSize  );    background-color: $backgroundColorGrid;
     color: $textColor;
     .even {
       background-color: $baseColor;
     }
     .uneven {
-      background-color: lighten( $baseColor, 10% );
+      background-color: lighten( $baseColor, 20% );
     }
     &.reversed {
       .active {
@@ -121,6 +142,8 @@
   .cell {
     border-radius: $borderRadius;
     font-size:$fontBaseSize * 1.5;
+
+
 
     .cellHelper-wrapper {
       display: grid;
@@ -164,19 +187,44 @@
     &.active {
       border: 2px solid $backgroundColorGrid;
     }
+
     &.given {
       color: darken(#ffffff, 20%);
     }
-    &.strategy {
-      background-color: $strategyColor;
+    &.strategy, &.sweepValue {
+      .cellOptionalValues-cell {
+        color: $baseColor;
+      }
     }
 
-    &.foundValue {
-      background-color: lighten($blue, 20%);
+    &.uneven {
+      &.strategy {
+        background-color: lighten($strategyColor, 30%);
+      }
+      &.foundValue {
+          background-color: lighten($blue, 30%);
+        &.given {
+          color: darken(#ffffff, 40%);
+        }
+      }
+      &.sweepValue {
+        background-color:  lighten($alternativeColor, 30%);
+      }
     }
-    &.sweepValue {
-      background-color:  lighten($alternativeColor, 20%);
-      text: black;
+    &.even {
+      &.strategy {
+        background-color: lighten($strategyColor, 20%);
+      }
+      &.foundValue {
+        background-color: lighten($blue, 20%);
+        &.given {
+          color: darken(#ffffff, 10%);
+        }
+
+      }
+      &.sweepValue {
+        background-color:  lighten($alternativeColor, 20%);
+      }
     }
 
     &.error {

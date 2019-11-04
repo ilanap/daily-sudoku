@@ -5,13 +5,23 @@ import PropTypes from 'prop-types';
 
 import MainPageView from './MainPage.jsx';
 
-const getMainPage = state => state && state.mainpage;
+export const getMainPage = state => state && state.mainpage;
 
 function mapDispatchToProps(dispatch) {
     return {
         initSudokuData: () =>
             dispatch({
                 type: callTypes.LOAD_SUDOKU_DATA,
+                payload: {}
+            }),
+        onPrevious: () =>
+            dispatch({
+                type: callTypes.LOAD_SUDOKU_DATA_PREVIOUS,
+                payload: {}
+            }),
+        onNext: () =>
+            dispatch({
+                type: callTypes.LOAD_SUDOKU_DATA_NEXT,
                 payload: {}
             })
     };
@@ -34,7 +44,13 @@ class MainPage extends React.Component {
     }
 
     render() {
-        return <MainPageView data={this.props.data} />;
+        return (
+            <MainPageView
+                data={this.props.data}
+                onNext={this.props.onNext}
+                onPrevious={this.props.onPrevious}
+            />
+        );
     }
 }
 export default connect(

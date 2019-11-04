@@ -6,9 +6,13 @@ $fontBaseSize: 15pt;
 $blue:#009fdb;
 $cellInnerSize: 60px;
 $gridGap: 2px;
+$borderWidth: 5px;
+$printBorderWidth: 2px;
+$borderColor: #3e3e3e;
 $sweepButtonColor: #f4a4f5;
 $alternativeColor: #ff1493;
 $strategyColor: #25ba8b;
+$subGridBorder: black;
 
 @import 'scss/Loader';
 @import 'scss/Grid';

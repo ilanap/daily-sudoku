@@ -55,7 +55,7 @@ function mapDispatchToProps(dispatch) {
                 type: actionTypes.UNDO
             }),
         onPrint: () => {
-            alert(0);
+            window.print();
         },
         onReset: () =>
             dispatch({
