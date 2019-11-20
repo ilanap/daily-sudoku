@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { actionTypes } from './GridConstants.js';
 
+// selectors
 const getCells = state => state && state.grid && state.grid.cells;
 const isSweep = state => state && state.grid && state.grid.isSweep;
 const isSolved = state => state && state.grid && state.grid.solved;
@@ -12,6 +13,7 @@ const getFindCellValue = state =>
 const getSweepCellValue = state =>
     state && state.grid && state.grid.showSweepValue;
 const getStrategy = state => state && state.grid && state.grid.strategy;
+
 const mapStateToProps = state => {
     return {
         cells: getCells(state),

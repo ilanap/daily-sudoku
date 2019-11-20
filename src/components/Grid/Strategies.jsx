@@ -15,6 +15,9 @@ const Strategies = ({ clickStrategy }) => {
                 <option value={strategyTypes.ONLY_VALUE_IN_REGION}>
                     Only value for row/cell/grid
                 </option>
+                <option value={strategyTypes.COMBINATION_2}>
+                    Combinations of 2 numbers in row/cell/grid
+                </option>
                 <option value={strategyTypes.HELPER_GRID}>Helper Grid</option>
                 <option value={strategyTypes.NONE}>None </option>
             </select>

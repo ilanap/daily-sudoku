@@ -4,40 +4,72 @@ import {
     SUB_GRID_SIZE
 } from 'components/Grid/GridConstants';
 
-export function getValuesForRegions(cells) {
-    let sweepData = {};
+export function getGridFilteredAndMappedToRegions(
+    cells,
+    filterFunction,
+    mapFunction
+) {
+    let regionData = {};
     REGIONS.forEach(field => {
-        sweepData[field] = new Array(GRID_SIZE);
+        regionData[field] = new Array(GRID_SIZE);
     });
-    for (let i = 0; i < GRID_SIZE; i++) {
-        REGIONS.forEach(region => {
-            sweepData[region][i] = cells
-                .filter(cell => cell.value !== null && cell[region] === i)
-                .map(cell => cell.value);
+    for (let regionIndex = 0; regionIndex < GRID_SIZE; regionIndex++) {
+        REGIONS.forEach(regionField => {
+            regionData[regionField][regionIndex] = cells
+                .filter(cell => filterFunction(cell, regionField, regionIndex))
+                .map(cell => mapFunction(cell, regionField, regionIndex));
         });
     }
-    return sweepData;
+    return regionData;
 }
+
+export function getValuesForRegions(cells) {
+    return getGridFilteredAndMappedToRegions(
+        cells,
+        function(cell, regionField, regionIndex) {
+            return cell.value !== null && cell[regionField] === regionIndex;
+        },
+        function(cell) {
+            return cell.value;
+        }
+    );
+}
+
+export function getCellIndicesPerRegion(cells) {
+    return getGridFilteredAndMappedToRegions(
+        cells,
+        function(cell, regionField, regionIndex) {
+            return cell[regionField] === regionIndex;
+        },
+        function(cell) {
+            return cell.index;
+        }
+    );
+}
+function getValuesForRegionsOfCell(cell, regionData) {
+    let foundValues = [];
+    // get all the values that are present in the regions to know what
+    // is not an optional value later on
+    REGIONS.forEach(region => {
+        foundValues = foundValues.concat(regionData[region][cell[region]]);
+    });
+    return [...new Set(foundValues)];
+}
+
+export function getArrayWithAllPossibleNumbers() {
+    return [...Array(GRID_SIZE).keys()].map(x => x + 1);
+}
+
 export function getOptionalValues(cells) {
     let optionalValues = [];
     let regionData = getValuesForRegions(cells);
     cells.forEach(cell => {
         if (!cell.given) {
-            let foundValues = [];
-            // get all the values that are present in the regions to know what
-            // is not an optional value later on
-            REGIONS.forEach(region => {
-                foundValues = foundValues.concat(
-                    regionData[region][cell[region]]
-                );
-            });
-            let optionalValuesCells = [];
-            for (let i = 1; i <= GRID_SIZE; i++) {
-                if (!foundValues.includes(i)) {
-                    optionalValuesCells.push(i);
-                }
-            }
-            optionalValues[cell.index] = optionalValuesCells;
+            let foundValues = getValuesForRegionsOfCell(cell, regionData);
+            let optionalValuesCells = getArrayWithAllPossibleNumbers();
+            optionalValues[cell.index] = optionalValuesCells.filter(
+                num => !foundValues.includes(num)
+            );
         } else {
             optionalValues[cell.index] = [];
         }
@@ -67,6 +99,7 @@ export function parseOrigDataToCells(strArr) {
             index: i,
             error: false,
             active: false,
+            strategy: false,
             helperValues: {
                 left: null,
                 right: null,
@@ -76,7 +109,7 @@ export function parseOrigDataToCells(strArr) {
             },
             sweepValues: []
         };
-        if (strArr[i] !== '.') {
+        if (strArr[i] !== null && strArr[i] !== '.') {
             cellData.value = +strArr[i];
             cellData.given = true;
         } else {
@@ -91,6 +124,11 @@ export function parseOrigDataToCells(strArr) {
 
         outputData[i] = cellData;
     }
+    let sweepCells = getOptionalValues(outputData);
+    outputData.forEach(cell => {
+        cell.sweepValues = sweepCells[cell.index];
+    });
+
     return outputData;
 }
 
@@ -130,6 +168,13 @@ export function isCellRelationship(cell, other) {
         other.row === cell.row ||
         other.column === cell.column ||
         other.subGrid == cell.subGrid
+    );
+}
+
+export function getCellsWithRelationship(testCell, cells) {
+    return cells.filter(
+        cell =>
+            cell.index !== testCell.index && isCellRelationship(cell, testCell)
     );
 }
 

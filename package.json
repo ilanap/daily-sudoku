@@ -6,12 +6,13 @@
 		"start": "webpack-dev-server --mode=development --progress --hot --inline",
 		"build": "webpack --config webpack.config.js --mode production",
 		"lint-fix": "eslint --fix  --ext .js --ext .jsx src",
-		"test": "jest"
+		"test": "jest --no-cache"
 	},
 	"dependencies": {
 		"axios": "^0.18.0",
 		"classnames": "^2.2.6",
 		"express": "^4.17.1",
+		"js-combinatorics": "^0.5.4",
 		"prop-types": "^15.6.1",
 		"react": "^16.8.0",
 		"react-dom": "^16.8.0",
@@ -43,6 +44,7 @@
 		"jest": "^24.9.0",
 		"less": "^3.0.4",
 		"less-loader": "^4.1.0",
+		"lodash": "^4.17.15",
 		"npm": "^6.0.1",
 		"prettier": "1.16.4",
 		"react-test-renderer": "^16.4.1",
@@ -54,5 +56,24 @@
 		"webpack-glob-entry": "^2.1.1",
 		"webpack-sass-loaders": "^1.0.0",
 		"webpack-shell-plugin": "^0.5.0"
+	},
+	"jest": {
+		"modulePaths": [
+			"<rootDir>"
+		],
+		"moduleNameMapper": {
+			"^src(.*)$": "<rootDir>/src$1",
+			"^components(.*)$": "<rootDir>/src/components$1"
+		},
+		"testPathIgnorePatterns": [
+			"<rootDir>/node_modules/"
+		],
+		"transformIgnorePatterns": [
+			"<rootDir>/node_modules/"
+		],
+		"moduleDirectories": [
+			"node_modules",
+			"src"
+		]
 	}
 }

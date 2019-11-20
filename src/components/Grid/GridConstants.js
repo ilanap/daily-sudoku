@@ -14,6 +14,8 @@ export const actionTypes = {
 export const strategyTypes = {
     ONLY_ONE_VALUE: 'strategy/ONLY_ONE_VALUE',
     ONLY_VALUE_IN_REGION: 'strategy/ONLY_VALUE_IN_REGION',
+    COMBINATION_2: 'strategy/COMBINATION_2',
+    COMBINATION_3: 'strategy/COMBINATION_3',
     HELPER_GRID: 'stategy/HELPER_GRID',
     XWING_2: 'strategy/XWING_2',
     NONE: 'strategy/NONE'

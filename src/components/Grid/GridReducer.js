@@ -5,14 +5,13 @@ import {
     strategyTypes
 } from 'components/Grid/GridConstants';
 import {
-    getOptionalValues,
     updateOptionalValues,
     parseOrigDataToCells,
     getKeyValueFromEvent,
     checkError
 } from './GridHelper.js';
 import { applyStrategy } from './StrategyHelper.js';
-import { isValueRelevantForSweep } from './GridHelper';
+import { getOptionalValues, isValueRelevantForSweep } from './GridHelper';
 
 export default (
     state = {
@@ -73,18 +72,25 @@ export default (
             };
         }
         case gridActionTypes.SWEEP: {
-            let cells = [...state.cells];
             let sweep = state.isSweep === false;
-            let sweepCells = getOptionalValues(cells);
-            cells = cells.map(item => {
-                item.sweepValues = sweep ? sweepCells[item.index] : [];
-                return item;
-            });
-            return {
-                ...state,
-                cells: cells,
-                isSweep: sweep
-            };
+            if (sweep) {
+                let cells = [...state.cells];
+                let sweepCells = getOptionalValues(cells);
+                cells = cells.map(item => {
+                    item.sweepValues = sweepCells[item.index];
+                    return item;
+                });
+                return {
+                    ...state,
+                    cells: cells,
+                    isSweep: sweep
+                };
+            } else {
+                return {
+                    ...state,
+                    isSweep: sweep
+                };
+            }
         }
         case gridActionTypes.UNDO: {
             if (state.history.length === 0) {
@@ -114,7 +120,6 @@ export default (
                                 )
                             ) {
                                 returnItem.sweepValues.push(oldValue);
-                                console.log(returnItem);
                             }
                         }
                     }
@@ -257,6 +262,7 @@ export default (
 
         case strategyTypes.NONE:
         case strategyTypes.HELPER_GRID:
+        case strategyTypes.COMBINATION_2:
         case strategyTypes.ONLY_VALUE_IN_REGION:
         case strategyTypes.ONLY_ONE_VALUE: {
             let cells = [...state.cells];
