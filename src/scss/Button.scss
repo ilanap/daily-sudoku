@@ -26,9 +26,10 @@
   }
 
 }
-.number {
+.number, .solve {
   margin: $gridGap ;
-  width: ($cellInnerSize/2);
+  width: 30px;
+
   height: 25px;
   padding: $gridGap;
   font-size: $fontBaseSize * .75;
@@ -41,6 +42,9 @@
   &.off {
     background-color: lighten($baseColor, 40%);
     text-align: center;
+    &.solve {
+      width: 50px;
+    }
     width: 35px;
   }
 }

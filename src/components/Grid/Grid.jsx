@@ -24,7 +24,8 @@ const Grid = ({
     findSweepValue,
     solved,
     clickStrategy,
-    strategy
+    strategy,
+    solveStrategy
 }) => {
     return (
         <div>
@@ -66,7 +67,10 @@ const Grid = ({
                         className="sweepNumber"
                         title="Swept Numbers"
                     />
-                    <Strategies clickStrategy={clickStrategy} />
+                    <Strategies
+                        clickStrategy={clickStrategy}
+                        onSolve={solveStrategy}
+                    />
                 </div>
                 <br />
                 <span>Use the SHIFT key to enter/remove possible values</span>

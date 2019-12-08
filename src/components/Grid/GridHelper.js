@@ -4,11 +4,7 @@ import {
     SUB_GRID_SIZE
 } from 'components/Grid/GridConstants';
 
-export function getGridFilteredAndMappedToRegions(
-    cells,
-    filterFunction,
-    mapFunction
-) {
+function getGridFilteredAndMappedToRegions(cells, filterFunction, mapFunction) {
     let regionData = {};
     REGIONS.forEach(field => {
         regionData[field] = new Array(GRID_SIZE);
@@ -21,6 +17,16 @@ export function getGridFilteredAndMappedToRegions(
         });
     }
     return regionData;
+}
+
+function getValuesForRegionsOfCell(cell, regionData) {
+    let foundValues = [];
+    // get all the values that are present in the regions to know what
+    // is not an optional value later on
+    REGIONS.forEach(region => {
+        foundValues = foundValues.concat(regionData[region][cell[region]]);
+    });
+    return [...new Set(foundValues)];
 }
 
 export function getValuesForRegions(cells) {
@@ -46,15 +52,6 @@ export function getCellIndicesPerRegion(cells) {
         }
     );
 }
-function getValuesForRegionsOfCell(cell, regionData) {
-    let foundValues = [];
-    // get all the values that are present in the regions to know what
-    // is not an optional value later on
-    REGIONS.forEach(region => {
-        foundValues = foundValues.concat(regionData[region][cell[region]]);
-    });
-    return [...new Set(foundValues)];
-}
 
 export function getArrayWithAllPossibleNumbers() {
     return [...Array(GRID_SIZE).keys()].map(x => x + 1);
@@ -75,6 +72,18 @@ export function getOptionalValues(cells) {
         }
     });
     return optionalValues;
+}
+
+export function getCellsWithRelationship(testCell, cells) {
+    return [
+        ...new Set(
+            cells.filter(
+                cell =>
+                    cell.index !== testCell.index &&
+                    isCellRelationship(cell, testCell)
+            )
+        )
+    ];
 }
 
 export function updateOptionalValues(cells, changedCell) {
@@ -100,6 +109,7 @@ export function parseOrigDataToCells(strArr) {
             error: false,
             active: false,
             strategy: false,
+            solveValue: null,
             helperValues: {
                 left: null,
                 right: null,
@@ -130,6 +140,10 @@ export function parseOrigDataToCells(strArr) {
     });
 
     return outputData;
+}
+
+export function getKeyCodeForNumber(val) {
+    return val + 48;
 }
 
 export function getKeyValueFromEvent({ keyCode, isShift }) {
@@ -168,13 +182,6 @@ export function isCellRelationship(cell, other) {
         other.row === cell.row ||
         other.column === cell.column ||
         other.subGrid == cell.subGrid
-    );
-}
-
-export function getCellsWithRelationship(testCell, cells) {
-    return cells.filter(
-        cell =>
-            cell.index !== testCell.index && isCellRelationship(cell, testCell)
     );
 }
 

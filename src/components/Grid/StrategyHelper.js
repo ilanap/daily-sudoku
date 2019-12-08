@@ -28,12 +28,14 @@ export function applyStrategy(type, cells) {
         }
         case strategyTypes.ONLY_ONE_VALUE: {
             let returnCells = cells.map(item => {
-                if (item.value) {
+                if (item.value || item.sweepValues.length > 1) {
                     return item;
                 } else {
+                    printHint(item.sweepValues, item);
                     return {
                         ...item,
-                        strategy: cells[item.index].sweepValues.length === 1
+                        strategy: true,
+                        solveValue: item.sweepValues[0]
                     };
                 }
             });
@@ -55,9 +57,9 @@ export function applyStrategy(type, cells) {
                 if (c.value !== null) {
                     return;
                 }
-                let isStrategy = false;
+                let strategyValue = -1;
                 REGIONS.forEach(region => {
-                    if (!isStrategy) {
+                    if (strategyValue < 0) {
                         let checkRegion = regionValues[region];
                         checkRegion = checkRegion[c[region]];
                         let relations = checkRegion
@@ -77,14 +79,19 @@ export function applyStrategy(type, cells) {
                         let onlyValues = c.sweepValues.filter(
                             val => !relations.includes(val)
                         );
-                        isStrategy = onlyValues.length > 0;
-                        if (isStrategy) {
+                        strategyValue =
+                            onlyValues.length === 1 ? onlyValues[0] : -1;
+                        if (strategyValue > 0) {
                             printHint(onlyValues, c);
                         }
                     }
                 });
-                if (isStrategy) {
-                    cells[c.index] = { ...c, strategy: true };
+                if (strategyValue > 0) {
+                    cells[c.index] = {
+                        ...c,
+                        strategy: true,
+                        solveValue: strategyValue
+                    };
                 }
             });
             return cells;
@@ -119,28 +126,46 @@ export function applyStrategy(type, cells) {
             let regionCells = getCellIndicesPerRegion(cells);
             REGIONS.forEach(region => {
                 regionCells[region].forEach((regionCells, i) => {
+                    let foundCells = [];
+                    let foundExactCells = [];
                     let cmb = regionData[region][i];
-                    cmb.forEach(c => {
-                        let foundCells = [];
+                    for (let cIndex = 0; cIndex < cmb.length; cIndex++) {
+                        // going through cells and keeping those that have the combi
                         regionCells.forEach(cell => {
-                            let found = cells[cell].sweepValues.filter(val =>
-                                c.includes(val)
+                            let combiInSweepValues = cells[
+                                cell
+                            ].sweepValues.filter(val =>
+                                cmb[cIndex].includes(val)
                             );
-                            if (found === combinationsSize) {
+                            if (
+                                combiInSweepValues.length === combinationsSize
+                            ) {
+                                if (
+                                    combinationsSize ===
+                                    cells[cell].sweepValues.length
+                                ) {
+                                    foundExactCells.push(cell);
+                                }
                                 foundCells.push(cell);
                             }
                         });
-                        if (foundCells.length === combinationsSize) {
+                        let foundSet = [...new Set(foundCells)];
+                        if (foundSet.length > combinationsSize) {
+                            foundSet = [...new Set(foundExactCells)];
+                        }
+                        // checking whether it's an exclusive match for the combi
+                        if (foundSet.length === combinationsSize) {
                             // we found the same amount of cells as the number is the combination.
                             // fulfiils the strategy
-                            foundCells.forEach(cellIndex => {
+                            foundSet.forEach(cellIndex => {
+                                printHint(cmb[cIndex], cells[cellIndex]);
                                 cells[cellIndex] = {
                                     ...cells[cellIndex],
                                     strategy: true
                                 };
                             });
                         }
-                    });
+                    }
                 });
             });
             return cells;
@@ -153,7 +178,7 @@ export function applyStrategy(type, cells) {
             return cells;
     }
 
-    function printHint(hint, { row, column, subGrid }) {
+    function printHint(hint, { row, column, subGrid, index }) {
         console.log(
             'rows: ' +
                 row +
@@ -161,6 +186,8 @@ export function applyStrategy(type, cells) {
                 column +
                 ', subgrid: ' +
                 subGrid +
+                ', index: ' +
+                index +
                 ' --> ' +
                 hint
         );

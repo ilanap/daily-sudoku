@@ -213,9 +213,7 @@ export default (
                         strategy: false
                     };
                 });
-                if (state.isSweep) {
-                    updateOptionalValues(cells, cells[cell.index]);
-                }
+                updateOptionalValues(cells, cells[cell.index]);
                 if (state.strategy !== strategyTypes.NONE) {
                     cells = applyStrategy(state.strategy, cells);
                 }

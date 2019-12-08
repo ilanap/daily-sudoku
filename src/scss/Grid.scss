@@ -103,8 +103,10 @@
   select {
     &.strategy {
       background-color: lighten($strategyColor, 40%);
+      width: 270px +($gridGap*18);
     }
   }
+
   .grids-wrapper {
     display: grid;
     grid-gap: $gridGap;

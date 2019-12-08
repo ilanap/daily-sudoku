@@ -3,16 +3,17 @@ import GridView from './Grid.jsx';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { actionTypes } from './GridConstants.js';
+import { callTypes } from 'containers/MainPage/MainPageConstants';
 
 // selectors
-const getCells = state => state && state.grid && state.grid.cells;
+export const getCells = state => state && state.grid && state.grid.cells;
+export const getStrategy = state => state && state.grid && state.grid.strategy;
 const isSweep = state => state && state.grid && state.grid.isSweep;
 const isSolved = state => state && state.grid && state.grid.solved;
 const getFindCellValue = state =>
     state && state.grid && state.grid.showFoundValue;
 const getSweepCellValue = state =>
     state && state.grid && state.grid.showSweepValue;
-const getStrategy = state => state && state.grid && state.grid.strategy;
 
 const mapStateToProps = state => {
     return {
@@ -81,6 +82,11 @@ function mapDispatchToProps(dispatch) {
                 type: actionTypes.SHOW_SWEEP,
                 payload: value
             }),
+        solveStrategy: () => {
+            dispatch({
+                type: callTypes.SOLVE_CURRENT_STRATEGY
+            });
+        },
         clickStrategy: evt => {
             dispatch({
                 type: evt.target.value
@@ -108,7 +114,8 @@ class Grid extends React.Component {
         isSweep: PropTypes.bool,
         findCellValue: PropTypes.number,
         findSweepValue: PropTypes.number,
-        strategy: PropTypes.string
+        strategy: PropTypes.string,
+        solveStrategy: PropTypes.func
     };
 
     render() {
@@ -130,7 +137,8 @@ class Grid extends React.Component {
             findSweepValue,
             solved,
             clickStrategy,
-            strategy
+            strategy,
+            solveStrategy
         } = this.props;
         return (
             <div>
@@ -152,6 +160,7 @@ class Grid extends React.Component {
                     findCellValue={findCellValue}
                     findSweepValue={findSweepValue}
                     clickStrategy={clickStrategy}
+                    solveStrategy={solveStrategy}
                     strategy={strategy}
                 />
             </div>

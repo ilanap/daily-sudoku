@@ -7,8 +7,52 @@ import {
 } from 'containers/MainPage/MainPageConstants.js';
 import { actionTypes as loaderActionTypes } from 'components/Loader/LoaderConstants.js';
 import { getMainPage } from 'containers/MainPage/MainPage';
+import { getStrategy, getCells } from 'components/Grid/Grid';
+import {
+    actionTypes as gridCallTypes,
+    strategyTypes
+} from 'components/Grid/GridConstants';
+import { getKeyCodeForNumber } from 'components/Grid/GridHelper';
 
 export const getQueryParams = state => state.queryParams;
+
+function* solveStrategy() {
+    let cells = yield select(getCells);
+    let strategy = yield select(getStrategy);
+    let firstCell = cells.find(
+        cell => cell.strategy && cell.solveValue !== null
+    );
+    console.log(firstCell);
+    while (firstCell !== undefined) {
+        yield put({
+            type: gridCallTypes.CELL_CHANGED,
+            payload: {
+                keyCode: getKeyCodeForNumber(firstCell.solveValue),
+                isShift: false,
+                cell: firstCell
+            }
+        });
+        let cells = yield select(getCells);
+        firstCell = cells.find(
+            cell => cell.strategy && cell.solveValue !== null
+        );
+        console.log(firstCell);
+    }
+    if (strategy !== strategyTypes.NONE) {
+        for (let i = 0; i < cells.length; i++) {
+            if (cells[i].strategy && cells[i].solveValue) {
+                yield put({
+                    type: gridCallTypes.CELL_CHANGED,
+                    payload: {
+                        keyCode: getKeyCodeForNumber(cells[i].solveValue),
+                        isShift: false,
+                        cell: cells[i]
+                    }
+                });
+            }
+        }
+    }
+}
 
 function* loadExternalSudokuData(payload) {
     yield put({
@@ -58,6 +102,7 @@ function* loadExternalSudokuData(payload) {
 }
 
 function* rootSagas() {
+    yield takeEvery(callTypes.SOLVE_CURRENT_STRATEGY, solveStrategy);
     yield takeEvery(callTypes.LOAD_SUDOKU_DATA, loadExternalSudokuData, null);
     yield takeEvery(
         callTypes.LOAD_SUDOKU_DATA_PREVIOUS,
