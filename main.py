@@ -11,9 +11,6 @@ class MainPage(webapp2.RequestHandler):
 	def get(self):
 		self.redirect("/static/index.html")
 
-class 100Meters(webapp2.RequestHandler):
-	def get(self):
-		self.redirect("/static/100meters.html")
 
 class Sudoku(webapp2.RequestHandler):
 	def get(self):
@@ -27,7 +24,6 @@ application = webapp2.WSGIApplication(
 	[
 	('/', MainPage),
 	('/sudoku', Sudoku),
-	('/100meters.html', 100Meters),
 	],
 	debug=True)
 
