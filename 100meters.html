@@ -11,7 +11,7 @@
         }
         /* Optional: Makes the sample page fill the window. */
         html, body {
-            height: 100%;
+            height: 90%;
             margin: 0;
             padding: 0;
         }
@@ -49,10 +49,11 @@
         var marker = new google.maps.Marker({
             position: myLatLng,
             map: map,
+            draggable: true,
             title: 'Center'
         });
 
-        var cityCircle = new google.maps.Circle({
+        var circle = new google.maps.Circle({
             strokeColor: 'deeppink',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -63,6 +64,28 @@
             radius: 100
         });
 
+        google.maps.event.addListener(marker, 'drag', function() {
+            console.log('Dragging...');
+        });
+        google.maps.event.addListener(marker, 'dragstart', function() {
+            console.log(marker.getPosition().lat());
+            circle.setMap(null);
+        });
+
+        google.maps.event.addListener(marker, 'dragend', function() {
+//            console.log(marker.getPosition().lat());
+            circle = new google.maps.Circle({
+                strokeColor: 'deeppink',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: 'hotpink',
+                fillOpacity: 0.35,
+                map: map,
+                center: marker.getPosition(),
+                radius: 100
+            });
+            document.getElementById('coords').value = marker.getPosition().lat() +','+marker.getPosition().lng();
+        });
 
     }
 </script>
