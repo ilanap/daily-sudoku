@@ -7,7 +7,14 @@
         /* Always set the map height explicitly to define the size of the div
          * element that contains the map. */
         #map {
-            height: 100%;
+            min-height: calc(100vh - 50px);
+            background-color: deeppink;
+        }
+
+        #container {
+            display: grid;
+            grid-template-columns: 100%;
+            grid-template-rows: 50px auto;
         }
 
         /* Optional: Makes the sample page fill the window. */
@@ -21,7 +28,6 @@
             width: 100%;
             padding: 10px;
             background-color: deeppink;
-
         }
 
         input {
@@ -30,24 +36,25 @@
 
         #pac-input {
             background-color: #fff;
-            font-family: Roboto;
+            font-family: Arial, SansSerif;
             font-size: 15px;
             font-weight: 300;
             margin-left: 12px;
             padding: 0 11px 0 13px;
             text-overflow: ellipsis;
-            width: 400px;
         }
     </style>
 </head>
 <body>
-<input
-        id="pac-input"
-        class="controls"
-        type="text"
-        placeholder="Home Address"
-/>
-<div id="map"></div>
+<div id="container">
+        <input
+                id="pac-input"
+                class="controls"
+                type="text"
+                placeholder="Insert Home Address"
+        />
+    <div id="map"></div>
+</div>
 <script>
     let defaultcoords = [32.080123, 34.786615]; // home
     let map;
@@ -73,7 +80,9 @@
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: myLatLng,
-            zoom: 15
+            zoom: 15,
+            disableDefaultUI: true,
+            zoomControl: true
         });
 
         map.addListener('click', function (e) {
@@ -82,13 +91,13 @@
 
         const input = document.getElementById("pac-input");
         if (hasHome) {
-            addMarker(map, myLatLng, 'hotpink', 'deeppink');
+            let mycircle = addMarker(map, myLatLng, 'hotpink', 'deeppink');
             input.placeholder = 'i want meet someone that lives here...';
 			input.value='';
         }
 
         const searchBox = new google.maps.places.SearchBox(input);
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input); // Bias the SearchBox results towards current map's viewport.
+//        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input); // Bias the SearchBox results towards current map's viewport.
         let markers = [];
         map.addListener("bounds_changed", () => {
             searchBox.setBounds(map.getBounds());
@@ -128,6 +137,7 @@
         let marker = new google.maps.Marker({
             position: latLng,
             map: map,
+            map: map,
             draggable: true,
             title: ''
         });
@@ -143,6 +153,9 @@
         google.maps.event.addListener(marker, 'dragend', function () {
             myCircle = drawCircle(marker.getPosition(), innerColor, borderColor);
         });
+
+        map.setCenter(latLng);
+
 
     }
 
