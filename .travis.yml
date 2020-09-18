@@ -12,7 +12,7 @@ before_install:
   - npm install
   - npm run test
   - npm run build
-  - cp 100meters.html static
+  - cp whereCanIGo.html static
 after_script:
   - ls -l
   - ls -l static
